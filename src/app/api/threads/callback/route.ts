@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
     const { access_token, user_id } = await tokenResponse.json();
 
-    const response = redirectUrl('/threads', originalUrl);
+    const response = redirectUrl('/dashboard', originalUrl);
 
     response.cookies.set({
       name: 'threads_access_token',

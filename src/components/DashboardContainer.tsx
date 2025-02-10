@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-export default function ThreadsContainer() {
+export default function DashboardContainer() {
   useEffect(() => {
     if (window.location.hash === '#_') {
       history.replaceState(
