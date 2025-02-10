@@ -25,7 +25,10 @@ export async function GET(request: NextRequest) {
   try {
     const clientId = process.env.THREADS_CLIENT_ID;
     const clientSecret = process.env.THREADS_CLIENT_SECRET;
-    const redirectUri = process.env.THREADS_REDIRECT_URI;
+    const redirectUri =
+      process.env.NODE_ENV === 'development'
+        ? process.env.THREADS_LOCAL_REDIRECT_URI
+        : process.env.THREADS_REDIRECT_URI;
 
     const tokenUrl = 'https://graph.threads.net/oauth/access_token';
     const params = new URLSearchParams();
