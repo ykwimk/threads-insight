@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -11,10 +11,23 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Button } from './ui/button';
 
 const ChartComponent = dynamic(() => import('./Chart'), { ssr: false });
 
 export default function ThreadsInsightsDashboard() {
+  const [data, setData] = useState<any>(null);
+  const [breakdown, setBreakdown] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
+
   const dummyData = {
     totalViews: 1234,
     totalLikes: 567,
@@ -31,6 +44,33 @@ export default function ThreadsInsightsDashboard() {
     ],
   };
 
+  const followerData = data?.follower_demographics?.total_value?.value || {};
+  const breakdownLabels: Record<string, string> = {
+    country: '국가',
+    city: '도시',
+    age: '연령대',
+    gender: '성별',
+  };
+
+  const fetchData = async (breakdown?: string) => {
+    setLoading(true);
+
+    try {
+      const url = breakdown
+        ? `/api/dashboard?breakdown=${breakdown}`
+        : '/api/dashboard';
+
+      const res = await fetch(url);
+      const json = await res.json();
+      setData(json.userInsights);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (window.location.hash === '#_') {
       history.replaceState(
@@ -40,12 +80,11 @@ export default function ThreadsInsightsDashboard() {
       );
     }
 
-    fetch('/api/dashboard')
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    fetchData();
   }, []);
 
-  if (!dummyData) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!data) return <p>No data available.</p>;
 
   return (
     <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
@@ -54,7 +93,9 @@ export default function ThreadsInsightsDashboard() {
           <CardTitle>총 조회수</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold">{dummyData.totalViews}</p>
+          <p className="text-2xl font-bold">
+            {data.views?.total_value?.value || 0}
+          </p>
         </CardContent>
       </Card>
       <Card>
@@ -62,7 +103,9 @@ export default function ThreadsInsightsDashboard() {
           <CardTitle>총 좋아요</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold">{dummyData.totalLikes}</p>
+          <p className="text-2xl font-bold">
+            {data.likes?.total_value?.value || 0}
+          </p>
         </CardContent>
       </Card>
       <Card>
@@ -70,7 +113,9 @@ export default function ThreadsInsightsDashboard() {
           <CardTitle>총 리플</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold">{dummyData.totalReplies}</p>
+          <p className="text-2xl font-bold">
+            {data.replies?.total_value?.value || 0}
+          </p>
         </CardContent>
       </Card>
       <Card>
@@ -78,9 +123,63 @@ export default function ThreadsInsightsDashboard() {
           <CardTitle>팔로워 수</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold">{dummyData.followerCount}</p>
+          <p className="text-2xl font-bold">
+            {data.followers_count?.total_value?.value || 0}
+          </p>
         </CardContent>
       </Card>
+      <div className="col-span-2">
+        <h2 className="mb-4 text-xl font-bold">팔로워 분석</h2>
+        <div className="flex items-center justify-start gap-2">
+          <Select
+            value={breakdown}
+            onValueChange={(value) => setBreakdown(value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="-" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="country">국가별</SelectItem>
+                <SelectItem value="city">도시별</SelectItem>
+                <SelectItem value="age">연령별</SelectItem>
+                <SelectItem value="gender">성별별</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button disabled={!breakdown} onClick={() => fetchData(breakdown)}>
+            데이터 불러오기
+          </Button>
+        </div>
+      </div>
+      {/* 선택한 breakdown 데이터 표시 */}
+      {breakdown && (
+        <div className="col-span-2">
+          <h2 className="mb-4 text-xl font-bold">
+            {breakdownLabels[breakdown]}별 팔로워 분포
+          </h2>
+          {Object.keys(followerData).length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{breakdownLabels[breakdown]}</TableHead>
+                  <TableHead>팔로워 수</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Object.entries(followerData).map(([key, value]) => (
+                  <TableRow key={key}>
+                    <TableCell>{key}</TableCell>
+                    <TableCell>{String(value)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <p className="text-gray-500">해당 데이터를 불러올 수 없습니다.</p>
+          )}
+        </div>
+      )}
       <div className="col-span-2">
         <h2 className="mb-4 text-xl font-bold">미디어 인사이트</h2>
         <Table>
