@@ -39,6 +39,10 @@ export default function ThreadsInsightsDashboard() {
         window.location.pathname + window.location.search,
       );
     }
+
+    fetch('/api/dashboard')
+      .then((res) => res.json())
+      .then((data) => console.log(data));
   }, []);
 
   if (!dummyData) return <p>Loading...</p>;
