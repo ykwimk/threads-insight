@@ -6,9 +6,6 @@ function redirectUrl(url: string, baseUrl: URL) {
 
 export async function GET(request: NextRequest) {
   const originalUrl = new URL(request.url);
-  if (originalUrl.hostname === 'localhost') {
-    originalUrl.protocol = 'http:';
-  }
 
   const { searchParams } = originalUrl;
   const code = searchParams.get('code');

@@ -1,13 +1,10 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
 
 export default function HomeContainer() {
-  const router = useRouter();
-
   const handleLogin = () => {
-    router.push('/api/threads/login');
+    window.location.href = '/api/threads/login';
   };
 
   return (
