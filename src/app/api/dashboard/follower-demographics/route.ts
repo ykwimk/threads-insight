@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ProfileResponseType, UserInsightsResponseType } from '@/types';
+import { FollowerDemographicsResponseType, ProfileResponseType } from '@/types';
 
 const THREADS_API_BASE = 'https://graph.threads.net/v1.0';
 
@@ -23,18 +23,18 @@ async function fetchFollowerDemographics(
   userId: string,
   accessToken: string,
   breakdown?: string,
-): Promise<UserInsightsResponseType> {
-  const userParams = new URLSearchParams({
+): Promise<FollowerDemographicsResponseType> {
+  const followerParams = new URLSearchParams({
     access_token: accessToken,
     metric: 'follower_demographics',
   });
 
   if (breakdown) {
-    userParams.append('breakdown', breakdown);
+    followerParams.append('breakdown', breakdown);
   }
 
   const response = await fetch(
-    `${THREADS_API_BASE}/${userId}/threads_insights?${userParams.toString()}`,
+    `${THREADS_API_BASE}/${userId}/threads_insights?${followerParams.toString()}`,
   );
 
   if (!response.ok) {

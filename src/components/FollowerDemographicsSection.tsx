@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { FollowerDemographicsResponseType } from '@/types';
 import {
   Select,
   SelectContent,
@@ -17,9 +18,13 @@ import {
 } from './ui/select';
 import { Button } from './ui/button';
 import LoadingSpinner from './LoadingSpinner';
+import { ScrollArea } from './ui/scroll-area';
+import { Card, CardContent, CardHeader } from './ui/card';
 
 export default function FollowerDemographicsSection() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<FollowerDemographicsResponseType | null>(
+    null,
+  );
   const [breakdown, setBreakdown] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -44,7 +49,11 @@ export default function FollowerDemographicsSection() {
     }
   };
 
-  const followerData = data?.follower_demographics?.total_value?.value || {};
+  const followerData = useMemo(() => {
+    if (!data) return;
+    return data[0].total_value.breakdowns[0].results;
+  }, [data]);
+
   const breakdownLabels: Record<string, string> = {
     country: '국가',
     city: '도시',
@@ -61,58 +70,71 @@ export default function FollowerDemographicsSection() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
-      <div className="col-span-2">
-        <h2 className="mb-4 text-xl font-bold">팔로워 분석</h2>
-        <div className="flex items-center justify-start gap-2">
-          <Select
-            value={breakdown}
-            onValueChange={(value) => setBreakdown(value)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="-" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="country">국가별</SelectItem>
-                <SelectItem value="city">도시별</SelectItem>
-                <SelectItem value="age">연령별</SelectItem>
-                <SelectItem value="gender">성별별</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button disabled={!breakdown} onClick={() => fetchData(breakdown)}>
-            데이터 불러오기
-          </Button>
-        </div>
-      </div>
-      {breakdown && (
-        <div className="col-span-2">
-          <h2 className="mb-4 text-xl font-bold">
-            {breakdownLabels[breakdown]}별 팔로워 분포
-          </h2>
-          {Object.keys(followerData).length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{breakdownLabels[breakdown]}</TableHead>
-                  <TableHead>팔로워 수</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Object.entries(followerData).map(([key, value]) => (
-                  <TableRow key={key}>
-                    <TableCell>{key}</TableCell>
-                    <TableCell>{String(value)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-gray-500">해당 데이터를 불러올 수 없습니다.</p>
-          )}
-        </div>
-      )}
+    <div className="h-full overflow-auto p-6">
+      <Card>
+        <CardHeader>
+          <div>
+            <h2 className="mb-4 text-xl font-bold">팔로워 분석</h2>
+            <div className="flex items-center justify-start gap-2">
+              <Select
+                value={breakdown}
+                onValueChange={(value) => setBreakdown(value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="-" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="country">국가별</SelectItem>
+                    <SelectItem value="city">도시별</SelectItem>
+                    <SelectItem value="age">연령별</SelectItem>
+                    <SelectItem value="gender">성별별</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Button
+                disabled={!breakdown}
+                onClick={() => fetchData(breakdown)}
+              >
+                데이터 불러오기
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        {breakdown && followerData && (
+          <CardContent>
+            <div className="mt-4">
+              {followerData.length > 0 ? (
+                <ScrollArea className="relative h-96 w-full rounded-md bg-white">
+                  <Table className="relative">
+                    <TableHeader className="sticky top-0 bg-white">
+                      <TableRow>
+                        <TableHead>{breakdownLabels[breakdown]}</TableHead>
+                        <TableHead>팔로워 수</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className="h-32">
+                      {followerData.map((item, index) => {
+                        const { dimension_values, value } = item;
+                        return (
+                          <TableRow key={index}>
+                            <TableCell>{dimension_values[0]}</TableCell>
+                            <TableCell>{String(value)}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              ) : (
+                <p className="text-gray-500">
+                  해당 데이터를 불러올 수 없습니다.
+                </p>
+              )}
+            </div>
+          </CardContent>
+        )}
+      </Card>
     </div>
   );
 }
