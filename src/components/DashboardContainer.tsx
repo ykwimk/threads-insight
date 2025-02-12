@@ -17,13 +17,15 @@ export default function DashboardContainer() {
   }, []);
 
   return (
-    <div className="bg-gray-50">
-      {/* 사용자 인사이트 */}
-      <UserInsightsSection />
-      {/* 팔로워들의 인구 통계 정보 */}
-      <FollowerDemographicsSection />
-      {/* 미디어 인사이트 */}
-      <MediaInsightsSection />
-    </div>
+    <main className="flex min-h-screen items-center justify-center bg-gray-50 max-md:p-5">
+      <div className="w-full max-w-3xl max-md:block">
+        {/* 사용자 인사이트 */}
+        <UserInsightsSection />
+        {/* 팔로워들의 인구 통계 정보 */}
+        <FollowerDemographicsSection />
+        {/* 미디어 인사이트 */}
+        <MediaInsightsSection />
+      </div>
+    </main>
   );
 }

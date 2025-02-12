@@ -45,16 +45,8 @@ export default function UserInsightsSection() {
     );
   }
 
-  if (!data) {
-    return (
-      <div className="flex items-center justify-center max-md:p-5">
-        <p className="p-6">No data available.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-2">
       <DashboardCard
         title={views?.title ?? '총 조회수'}
         description={views?.description}

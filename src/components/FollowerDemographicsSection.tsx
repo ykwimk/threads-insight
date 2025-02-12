@@ -42,7 +42,6 @@ export default function FollowerDemographicsSection() {
       setData(json.followerDemographics);
       setLoading(false);
     } catch (err) {
-      console.log('err: ', err);
       console.error(err);
     } finally {
       setLoading(false);
@@ -50,8 +49,11 @@ export default function FollowerDemographicsSection() {
   };
 
   const followerData = useMemo(() => {
-    if (!data) return;
-    return data[0].total_value.breakdowns[0].results;
+    if (data) {
+      return data[0].total_value.breakdowns[0].results;
+    }
+
+    return null;
   }, [data]);
 
   const breakdownLabels: Record<string, string> = {
@@ -60,14 +62,6 @@ export default function FollowerDemographicsSection() {
     age: '연령대',
     gender: '성별',
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center max-md:p-5">
-        <LoadingSpinner />
-      </div>
-    );
-  }
 
   return (
     <div className="h-full overflow-auto p-6">
@@ -101,38 +95,45 @@ export default function FollowerDemographicsSection() {
             </div>
           </div>
         </CardHeader>
-        {breakdown && followerData && (
-          <CardContent>
-            <div className="mt-4">
-              {followerData.length > 0 ? (
-                <ScrollArea className="relative h-96 w-full rounded-md bg-white">
-                  <Table className="relative">
-                    <TableHeader className="sticky top-0 bg-white">
-                      <TableRow>
-                        <TableHead>{breakdownLabels[breakdown]}</TableHead>
-                        <TableHead>팔로워 수</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody className="h-32">
-                      {followerData.map((item, index) => {
-                        const { dimension_values, value } = item;
-                        return (
-                          <TableRow key={index}>
-                            <TableCell>{dimension_values[0]}</TableCell>
-                            <TableCell>{String(value)}</TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </ScrollArea>
-              ) : (
-                <p className="text-gray-500">
-                  해당 데이터를 불러올 수 없습니다.
-                </p>
-              )}
-            </div>
-          </CardContent>
+        {loading ? (
+          <div className="flex items-center justify-center max-md:p-5">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          breakdown &&
+          followerData && (
+            <CardContent>
+              <div className="mt-4">
+                {followerData.length > 0 ? (
+                  <ScrollArea className="relative h-96 w-full rounded-md bg-white">
+                    <Table className="relative">
+                      <TableHeader className="sticky top-0 bg-white">
+                        <TableRow>
+                          <TableHead>{breakdownLabels[breakdown]}</TableHead>
+                          <TableHead>팔로워 수</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody className="h-32">
+                        {followerData.map((item, index) => {
+                          const { dimension_values, value } = item;
+                          return (
+                            <TableRow key={index}>
+                              <TableCell>{dimension_values[0]}</TableCell>
+                              <TableCell>{String(value)}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                ) : (
+                  <p className="text-gray-500">
+                    해당 데이터를 불러올 수 없습니다.
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          )
         )}
       </Card>
     </div>
