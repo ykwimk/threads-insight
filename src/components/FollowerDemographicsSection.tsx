@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from './ui/select';
 import { Button } from './ui/button';
+import LoadingSpinner from './LoadingSpinner';
 
 export default function FollowerDemographicsSection() {
   const [data, setData] = useState<any>(null);
@@ -53,8 +54,8 @@ export default function FollowerDemographicsSection() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center max-md:p-5">
-        <p>Loading...</p>
+      <div className="flex items-center justify-center max-md:p-5">
+        <LoadingSpinner />
       </div>
     );
   }

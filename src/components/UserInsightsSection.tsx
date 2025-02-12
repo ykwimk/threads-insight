@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { UserInsightsDataType } from '@/types';
 import DashboardCard from './DashboardCard';
+import LoadingSpinner from './LoadingSpinner';
 
 export default function UserInsightsSection() {
   const [data, setData] = useState<Array<UserInsightsDataType>>([]);
@@ -38,16 +39,16 @@ export default function UserInsightsSection() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center max-md:p-5">
-        <p>Loading...</p>
+      <div className="flex items-center justify-center max-md:p-5">
+        <LoadingSpinner />
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="flex min-h-screen items-center justify-center max-md:p-5">
-        <p>No data available.</p>
+      <div className="flex items-center justify-center max-md:p-5">
+        <p className="p-6">No data available.</p>
       </div>
     );
   }
