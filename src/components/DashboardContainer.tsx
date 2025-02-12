@@ -1,31 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
-import { Button } from './ui/button';
-import DashboardCard from './DashboardCard';
-
-const ChartComponent = dynamic(() => import('./Chart'), { ssr: false });
+import UserInsightsSection from './UserInsightsSection';
+import MediaInsightsSection from './MediaInsightsSection';
 
 export default function ThreadsInsightsDashboard() {
   const [data, setData] = useState<any>(null);
-  const [breakdown, setBreakdown] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   const dummyData = {
@@ -42,14 +22,6 @@ export default function ThreadsInsightsDashboard() {
       { date: '2024-07-13', views: 20 },
       { date: '2024-07-14', views: 30 },
     ],
-  };
-
-  const followerData = data?.follower_demographics?.total_value?.value || {};
-  const breakdownLabels: Record<string, string> = {
-    country: '국가',
-    city: '도시',
-    age: '연령대',
-    gender: '성별',
   };
 
   const fetchData = async (breakdown?: string) => {
@@ -100,103 +72,11 @@ export default function ThreadsInsightsDashboard() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
-      <DashboardCard
-        title="총 조회수"
-        value={data.views?.total_value?.value || 0}
-      />
-      <DashboardCard
-        title="총 좋아요"
-        value={data.likes?.total_value?.value || 0}
-      />
-      <DashboardCard
-        title="총 리플"
-        value={data.replies?.total_value?.value || 0}
-      />
-      <DashboardCard
-        title="팔로워 수"
-        value={data.followers_count?.total_value?.value || 0}
-      />
-      <div className="col-span-2">
-        <h2 className="mb-4 text-xl font-bold">팔로워 분석</h2>
-        <div className="flex items-center justify-start gap-2">
-          <Select
-            value={breakdown}
-            onValueChange={(value) => setBreakdown(value)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="-" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="country">국가별</SelectItem>
-                <SelectItem value="city">도시별</SelectItem>
-                <SelectItem value="age">연령별</SelectItem>
-                <SelectItem value="gender">성별별</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button disabled={!breakdown} onClick={() => fetchData(breakdown)}>
-            데이터 불러오기
-          </Button>
-        </div>
-      </div>
-      {breakdown && (
-        <div className="col-span-2">
-          <h2 className="mb-4 text-xl font-bold">
-            {breakdownLabels[breakdown]}별 팔로워 분포
-          </h2>
-          {Object.keys(followerData).length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{breakdownLabels[breakdown]}</TableHead>
-                  <TableHead>팔로워 수</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Object.entries(followerData).map(([key, value]) => (
-                  <TableRow key={key}>
-                    <TableCell>{key}</TableCell>
-                    <TableCell>{String(value)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-gray-500">해당 데이터를 불러올 수 없습니다.</p>
-          )}
-        </div>
-      )}
-      <div className="col-span-2">
-        <h2 className="mb-4 text-xl font-bold">미디어 인사이트</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>포스트 ID</TableHead>
-              <TableHead>조회수</TableHead>
-              <TableHead>좋아요</TableHead>
-              <TableHead>리플</TableHead>
-              <TableHead>리포스트</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {dummyData.mediaInsights.map((post: any) => (
-              <TableRow key={post.id}>
-                <TableCell>{post.id}</TableCell>
-                <TableCell>{post.views}</TableCell>
-                <TableCell>{post.likes}</TableCell>
-                <TableCell>{post.replies}</TableCell>
-                <TableCell>{post.reposts}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="col-span-2">
-        <h2 className="mb-4 text-xl font-bold">프로필 조회수 변화</h2>
-        <ChartComponent data={dummyData} />
-      </div>
+    <div>
+      {/* 사용자 인사이트 */}
+      <UserInsightsSection data={data} fetchData={fetchData} />
+      {/* 미디어 인사이트 */}
+      <MediaInsightsSection data={dummyData} />
     </div>
   );
 }
