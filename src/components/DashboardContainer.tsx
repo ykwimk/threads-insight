@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -20,6 +19,7 @@ import {
   SelectValue,
 } from './ui/select';
 import { Button } from './ui/button';
+import DashboardCard from './DashboardCard';
 
 const ChartComponent = dynamic(() => import('./Chart'), { ssr: false });
 
@@ -83,51 +83,40 @@ export default function ThreadsInsightsDashboard() {
     fetchData();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (!data) return <p>No data available.</p>;
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 max-md:p-5">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 max-md:p-5">
+        <p>No data available.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>총 조회수</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold">
-            {data.views?.total_value?.value || 0}
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>총 좋아요</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold">
-            {data.likes?.total_value?.value || 0}
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>총 리플</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold">
-            {data.replies?.total_value?.value || 0}
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>팔로워 수</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold">
-            {data.followers_count?.total_value?.value || 0}
-          </p>
-        </CardContent>
-      </Card>
+      <DashboardCard
+        title="총 조회수"
+        value={data.views?.total_value?.value || 0}
+      />
+      <DashboardCard
+        title="총 좋아요"
+        value={data.likes?.total_value?.value || 0}
+      />
+      <DashboardCard
+        title="총 리플"
+        value={data.replies?.total_value?.value || 0}
+      />
+      <DashboardCard
+        title="팔로워 수"
+        value={data.followers_count?.total_value?.value || 0}
+      />
       <div className="col-span-2">
         <h2 className="mb-4 text-xl font-bold">팔로워 분석</h2>
         <div className="flex items-center justify-start gap-2">
@@ -152,7 +141,6 @@ export default function ThreadsInsightsDashboard() {
           </Button>
         </div>
       </div>
-      {/* 선택한 breakdown 데이터 표시 */}
       {breakdown && (
         <div className="col-span-2">
           <h2 className="mb-4 text-xl font-bold">
