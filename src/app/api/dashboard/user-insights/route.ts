@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ProfileResponseType, UserInsightsResponseType } from './route.d';
+import { ProfileResponseType, UserInsightsResponseType } from '@/types';
 
 const THREADS_API_BASE = 'https://graph.threads.net/v1.0';
 
@@ -22,17 +22,11 @@ async function fetchProfileData(
 async function fetchUserInsights(
   userId: string,
   accessToken: string,
-  breakdown?: string,
 ): Promise<UserInsightsResponseType> {
   const userParams = new URLSearchParams({
     access_token: accessToken,
     metric: 'views,likes,replies,reposts,quotes,followers_count',
   });
-
-  if (breakdown) {
-    userParams.append('metric', 'follower_demographics');
-    userParams.append('breakdown', breakdown);
-  }
 
   const response = await fetch(
     `${THREADS_API_BASE}/${userId}/threads_insights?${userParams.toString()}`,
@@ -58,9 +52,6 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const { searchParams } = new URL(request.url);
-  const breakdown = searchParams.get('breakdown') || undefined;
-
   try {
     const profileData = await fetchProfileData(accessToken);
 
@@ -71,11 +62,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const userInsights = await fetchUserInsights(
-      profileData.id,
-      accessToken,
-      breakdown,
-    );
+    const userInsights = await fetchUserInsights(profileData.id, accessToken);
 
     return NextResponse.json({ userInsights });
   } catch (error: any) {

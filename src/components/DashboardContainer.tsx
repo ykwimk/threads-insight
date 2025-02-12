@@ -1,48 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import UserInsightsSection from './UserInsightsSection';
 import MediaInsightsSection from './MediaInsightsSection';
+import FollowerDemographicsSection from './FollowerDemographicsSection';
 
-export default function ThreadsInsightsDashboard() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-
-  const dummyData = {
-    totalViews: 1234,
-    totalLikes: 567,
-    totalReplies: 89,
-    followerCount: 1000,
-    mediaInsights: [
-      { id: 'post1', views: 100, likes: 50, replies: 5, reposts: 2 },
-      { id: 'post2', views: 200, likes: 80, replies: 10, reposts: 4 },
-    ],
-    profileViews: [
-      { date: '2024-07-12', views: 10 },
-      { date: '2024-07-13', views: 20 },
-      { date: '2024-07-14', views: 30 },
-    ],
-  };
-
-  const fetchData = async (breakdown?: string) => {
-    setLoading(true);
-
-    try {
-      const url = breakdown
-        ? `/api/dashboard?breakdown=${breakdown}`
-        : '/api/dashboard';
-
-      const res = await fetch(url);
-      const json = await res.json();
-      setData(json.userInsights);
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function DashboardContainer() {
   useEffect(() => {
     if (window.location.hash === '#_') {
       history.replaceState(
@@ -51,32 +14,16 @@ export default function ThreadsInsightsDashboard() {
         window.location.pathname + window.location.search,
       );
     }
-
-    fetchData();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 max-md:p-5">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 max-md:p-5">
-        <p>No data available.</p>
-      </div>
-    );
-  }
-
   return (
-    <div>
+    <div className="bg-gray-50">
       {/* 사용자 인사이트 */}
-      <UserInsightsSection data={data} fetchData={fetchData} />
+      <UserInsightsSection />
+      {/* 팔로워들의 인구 통계 정보 */}
+      <FollowerDemographicsSection />
       {/* 미디어 인사이트 */}
-      <MediaInsightsSection data={dummyData} />
+      <MediaInsightsSection />
     </div>
   );
 }

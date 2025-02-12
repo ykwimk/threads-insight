@@ -8,13 +8,25 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-interface Props {
-  data: any;
-}
-
 const ChartComponent = dynamic(() => import('./Chart'), { ssr: false });
 
-export default function MediaInsightsSection({ data }: Props) {
+export default function MediaInsightsSection() {
+  const data = {
+    totalViews: 1234,
+    totalLikes: 567,
+    totalReplies: 89,
+    followerCount: 1000,
+    mediaInsights: [
+      { id: 'post1', views: 100, likes: 50, replies: 5, reposts: 2 },
+      { id: 'post2', views: 200, likes: 80, replies: 10, reposts: 4 },
+    ],
+    profileViews: [
+      { date: '2024-07-12', views: 10 },
+      { date: '2024-07-13', views: 20 },
+      { date: '2024-07-14', views: 30 },
+    ],
+  };
+
   return (
     <div className="p-6">
       <div className="col-span-2">
