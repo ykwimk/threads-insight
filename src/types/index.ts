@@ -73,3 +73,8 @@ export interface MediaInsightsDataType {
   description: string;
   id: string;
 }
+
+export type MediaInsightsDataByIdType = Array<{
+  id: string | null;
+  insights: Array<MediaInsightsDataType>;
+}>;

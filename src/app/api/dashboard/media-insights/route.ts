@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
+  MediaInsightsDataByIdType,
   MediaInsightsDataType,
   PostDataType,
   PostResponseType,
@@ -43,21 +44,13 @@ async function fetchPostsData(
 async function fetchMediaInsights(
   mediaIds: string[],
   accessToken: string,
-): Promise<
-  Array<{
-    id: string | null;
-    insights: Array<MediaInsightsDataType>;
-  }>
-> {
+): Promise<MediaInsightsDataByIdType> {
   const mediaParams = new URLSearchParams({
     access_token: accessToken,
     metric: 'likes,replies,views,reposts,quotes,shares',
   });
 
-  const mediaData: Array<{
-    id: string | null;
-    insights: Array<MediaInsightsDataType>;
-  }> = [];
+  const mediaData: MediaInsightsDataByIdType = [];
 
   await Promise.all(
     mediaIds.map(async (mediaId: string) => {
