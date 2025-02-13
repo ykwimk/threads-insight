@@ -49,3 +49,27 @@ export interface FollowerDemographicsResultsType {
   dimension_values: Array<string>;
   value: number;
 }
+
+export interface PostResponseType {
+  data: Array<PostDataType>;
+}
+
+export interface PostDataType {
+  id: string;
+  media_type?: string;
+  text?: string;
+  media_url?: string;
+}
+
+export interface MediaInsightsResponseType {
+  data: Array<MediaInsightsDataType>;
+}
+
+export interface MediaInsightsDataType {
+  name: string;
+  period: string;
+  values: any; // 임시
+  title: string;
+  description: string;
+  id: string;
+}

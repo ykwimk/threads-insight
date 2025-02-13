@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import {
   Table,
@@ -26,6 +27,12 @@ export default function MediaInsightsSection() {
       { date: '2024-07-14', views: 30 },
     ],
   };
+
+  useEffect(() => {
+    fetch('/api/dashboard/media-insights')
+      .then((res) => res.json())
+      .then((data) => console.log('fetched data: ', data));
+  }, []);
 
   return (
     <div className="p-6">

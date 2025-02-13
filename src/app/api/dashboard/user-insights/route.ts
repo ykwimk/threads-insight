@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ userInsights });
   } catch (error: any) {
-    console.error('Insights API 호출 중 오류:', error);
+    console.error('User Insights API 호출 중 오류:', error);
     return NextResponse.json(
       { error: 'Internal Server Error', details: error.message },
       { status: 500 },

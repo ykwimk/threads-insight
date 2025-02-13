@@ -32,11 +32,9 @@ export default function FollowerDemographicsSection() {
     setLoading(true);
 
     try {
-      const url = breakdown
-        ? `/api/dashboard/follower-demographics?breakdown=${breakdown}`
-        : '/api/dashboard/follower-demographics';
-
-      const res = await fetch(url);
+      const res = await fetch(
+        `/api/dashboard/follower-demographics?breakdown=${breakdown}`,
+      );
       const json = await res.json();
 
       setData(json.followerDemographics);
