@@ -74,6 +74,7 @@ export default function MediaInsightsSection() {
         <PostDetailInsight
           selectedPostId={selectedPostId}
           mediaInsights={mediaInsights}
+          onClose={() => setSelectedPostId('')}
         />
       )}
       <div className="mt-8">
