@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { MediaInsightsDataByIdType, PostDataType } from '@/types';
 import LoadingSpinner from './LoadingSpinner';
 import PostCard from './PostCard';
 import PostDetailInsight from './PostDetailInsight';
-
-const ChartComponent = dynamic(() => import('./Chart'), { ssr: false });
 
 export default function MediaInsightsSection() {
   const [mediaInsights, setMediaInsights] = useState<MediaInsightsDataByIdType>(
@@ -77,10 +74,6 @@ export default function MediaInsightsSection() {
           onClose={() => setSelectedPostId('')}
         />
       )}
-      <div className="mt-8">
-        <h2 className="mb-4 text-xl font-bold">📈 프로필 조회수 변화</h2>
-        <ChartComponent data={[]} />
-      </div>
     </div>
   );
 }

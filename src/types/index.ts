@@ -13,7 +13,7 @@ export interface UserInsightsResponseType {
 export interface UserInsightsDataType {
   name: string;
   period: string;
-  value?: Array<UserInsightsValueType>;
+  values?: Array<UserInsightsValueType>;
   title: string;
   description: string;
   id: string;

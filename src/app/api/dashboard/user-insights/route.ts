@@ -23,9 +23,14 @@ async function fetchUserInsights(
   userId: string,
   accessToken: string,
 ): Promise<UserInsightsResponseType> {
+  const since = Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60; // 7일 전부터
+  const until = Math.floor(Date.now() / 1000); // 현재 시간
+
   const userParams = new URLSearchParams({
     access_token: accessToken,
     metric: 'views,likes,replies,reposts,quotes,followers_count',
+    since: since.toString(),
+    until: until.toString(),
   });
 
   const response = await fetch(
@@ -53,16 +58,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const profileData = await fetchProfileData(accessToken);
+    const profile = await fetchProfileData(accessToken);
 
-    if (!profileData.id) {
+    if (!profile.id) {
       return NextResponse.json(
         { error: 'Either userId or mediaId must be provided.' },
         { status: 400 },
       );
     }
 
-    const userInsights = await fetchUserInsights(profileData.id, accessToken);
+    const userInsights = await fetchUserInsights(profile.id, accessToken);
 
     return NextResponse.json({ userInsights });
   } catch (error: any) {
