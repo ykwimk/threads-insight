@@ -14,8 +14,10 @@ export default function UserInsightsSection() {
       const res = await fetch('/api/dashboard/user-insights');
       const json = await res.json();
 
-      setData(json.userInsights);
-      setLoading(false);
+      if (res.ok) {
+        setData(json.userInsights);
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
     } finally {
