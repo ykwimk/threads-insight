@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { MediaInsightsDataByIdType, PostDataType } from '@/types';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from '../common/LoadingSpinner';
 import PostCard from './PostCard';
-import PostDetailInsight from './PostDetailInsight';
+import DetailInsightByPostDialog from './DetailInsightByPostDialog';
 
 export default function MediaInsightsSection() {
   const [mediaInsights, setMediaInsights] = useState<MediaInsightsDataByIdType>(
@@ -68,7 +68,7 @@ export default function MediaInsightsSection() {
       )}
       {/* 포스트 상세 인사이트 */}
       {selectedPostId && (
-        <PostDetailInsight
+        <DetailInsightByPostDialog
           selectedPostId={selectedPostId}
           mediaInsights={mediaInsights}
           onClose={() => setSelectedPostId('')}

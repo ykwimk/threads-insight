@@ -14,7 +14,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from './ui/dialog';
+} from '../ui/dialog';
 
 interface Props {
   mediaInsights: MediaInsightsDataByIdType;
@@ -22,7 +22,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function PostDetailInsight({
+export default function DetailInsightByPostDialog({
   mediaInsights,
   selectedPostId,
   onClose,

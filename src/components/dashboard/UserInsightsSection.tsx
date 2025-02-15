@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { UserInsightsDataType, UserInsightsValueType } from '@/types';
 import DashboardCard from './DashboardCard';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from '../common/LoadingSpinner';
 
-const ChartComponent = dynamic(() => import('./Chart'), { ssr: false });
+const ChartComponent = dynamic(() => import('../common/Chart'), { ssr: false });
 
 export default function UserInsightsSection() {
   const [data, setData] = useState<Array<UserInsightsDataType>>([]);

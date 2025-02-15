@@ -5,7 +5,7 @@ import {
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
-} from './ui/chart';
+} from '../ui/chart';
 
 interface Props {
   data: Array<{ [key: string]: any }>;
