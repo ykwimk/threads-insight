@@ -9,6 +9,28 @@ export default function DashboardHeader() {
   const [profile, setProfile] = useState<ProfileResponseType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/profile');
+      const json = await res.json();
+
+      if (res.ok) {
+        setProfile(json.profile);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white p-4 shadow-md dark:bg-gray-900">
       <div className="mx-auto flex max-w-3xl items-center gap-4">
