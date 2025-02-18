@@ -44,10 +44,10 @@ export default function UserInsightsSection() {
     return data.find((insight) => insight.name === metrics);
   };
 
-  const views = getInsightsByName('views');
   const likes = getInsightsByName('likes');
   const replies = getInsightsByName('replies');
   const followersCount = getInsightsByName('followers_count');
+  const reposts = getInsightsByName('reposts');
 
   useEffect(() => {
     fetchData();
@@ -65,11 +65,6 @@ export default function UserInsightsSection() {
     <div className="p-6">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
         <DashboardCard
-          title={views?.title ?? '총 조회수'}
-          description={views?.description}
-          value={views?.total_value?.value || 0}
-        />
-        <DashboardCard
           title={likes?.title ?? '총 좋아요수'}
           description={likes?.description}
           value={likes?.total_value?.value || 0}
@@ -83,6 +78,11 @@ export default function UserInsightsSection() {
           title={followersCount?.title ?? '팔로워 수'}
           description={followersCount?.description}
           value={followersCount?.total_value?.value || 0}
+        />
+        <DashboardCard
+          title={reposts?.title ?? '총 조회수'}
+          description={reposts?.description}
+          value={reposts?.total_value?.value || 0}
         />
       </div>
       {/* 프로필 조회수 변화 */}
