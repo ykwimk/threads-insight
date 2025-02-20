@@ -52,6 +52,7 @@ export interface FollowerDemographicsResultsType {
 
 export interface PostResponseType {
   data: Array<PostDataType>;
+  paging?: any;
 }
 
 export interface PostDataType {

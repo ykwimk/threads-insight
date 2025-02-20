@@ -27,11 +27,16 @@ async function fetchProfileData(
 async function fetchPostsData(
   userId: string,
   accessToken: string,
+  after?: string,
 ): Promise<PostResponseType> {
   const profileParams = new URLSearchParams({
     fields: 'id,text,media_url,media_type',
     access_token: accessToken,
   });
+
+  if (after) {
+    profileParams.append('after', after); // 다음 페이지를 위한 cursor
+  }
 
   const response = await fetch(
     `${THREADS_API_BASE}/${userId}/threads?${profileParams.toString()}`,
@@ -43,11 +48,16 @@ async function fetchPostsData(
 async function fetchMediaInsights(
   mediaIds: string[],
   accessToken: string,
+  after?: string,
 ): Promise<MediaInsightsDataByIdType> {
   const mediaParams = new URLSearchParams({
     access_token: accessToken,
     metric: 'likes,replies,views,reposts,quotes,shares',
   });
+
+  if (after) {
+    mediaParams.append('after', after); // 다음 페이지를 위한 cursor
+  }
 
   const mediaData: MediaInsightsDataByIdType = [];
 
@@ -79,8 +89,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const { searchParams } = new URL(request.url);
+    const after = searchParams.get('after') || undefined;
+
     const profile = await fetchProfileData(accessToken);
-    const posts = await fetchPostsData(profile.id, accessToken);
+    const posts = await fetchPostsData(profile.id, accessToken, after);
 
     if (!profile.id || !posts) {
       return NextResponse.json(
@@ -89,9 +102,17 @@ export async function GET(request: NextRequest) {
       );
     }
     const mediaIds = posts.data.map((post: PostDataType) => post.id);
-    const mediaInsights = await fetchMediaInsights(mediaIds, accessToken);
+    const mediaInsights = await fetchMediaInsights(
+      mediaIds,
+      accessToken,
+      after,
+    );
 
-    return NextResponse.json({ mediaInsights, posts });
+    return NextResponse.json({
+      mediaInsights,
+      posts: posts.data,
+      nextCursor: posts.paging?.cursors?.after || null,
+    });
   } catch (error: any) {
     console.error('Media Insights API 호출 중 오류:', error);
     return NextResponse.json(
