@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { MediaInsightsDataByIdType, PostDataType } from '@/types';
 import LoadingSpinner from '../common/LoadingSpinner';
 import PostCard from './PostCard';
@@ -14,97 +14,97 @@ export default function MediaInsightsSection() {
   const [selectedPostId, setSelectedPostId] = useState<string>('');
 
   const listRef = useRef<HTMLDivElement>(null);
-  const sentinel = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const fetchData = async (cursor: string | null = null) => {
-    if (cursor) {
+  const fetchData = useCallback(
+    async (cursor: string | null = null) => {
+      if (loading) return;
+
       setLoading(true);
-    }
 
-    try {
-      const res = await fetch(
-        `/api/dashboard/media-insights${cursor ? `?after=${cursor}` : ''}`,
-      );
+      try {
+        const res = await fetch(
+          `/api/dashboard/media-insights${cursor ? `?after=${cursor}` : ''}`,
+        );
 
-      const json = await res.json();
+        const json = await res.json();
 
-      if (res.ok) {
-        setMediaInsights((prev: MediaInsightsDataByIdType) => [
-          ...prev,
-          ...json.mediaInsights,
-        ]);
-        setPosts((prev: PostDataType[]) => [...prev, ...json.posts]);
-        setNextCursor(json.nextCursor);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      if (cursor) {
+        if (res.ok) {
+          setMediaInsights((prev: MediaInsightsDataByIdType) => [
+            ...prev,
+            ...json.mediaInsights,
+          ]);
+          setPosts((prev: PostDataType[]) => [...prev, ...json.posts]);
+          setNextCursor(json.nextCursor);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
         setLoading(false);
       }
-    }
-  };
+    },
+    [loading],
+  );
 
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
-    let observer: IntersectionObserver;
+    if (!sentinelRef.current || !nextCursor) return;
 
-    if (!!posts.length && sentinel.current && nextCursor && !loading) {
-      observer = new window.IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          fetchData(nextCursor);
-        }
-      });
+    if (observerRef.current) observerRef.current.disconnect();
 
-      observer.observe(sentinel.current);
-    }
+    observerRef.current = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !loading) {
+        fetchData(nextCursor);
+      }
+    });
 
-    return () => observer && observer.disconnect();
-  }, [posts, loading, sentinel, nextCursor, fetchData]);
+    observerRef.current.observe(sentinelRef.current);
+
+    return () => observerRef.current?.disconnect();
+  }, [fetchData, nextCursor, loading]);
 
   return (
     <div className="p-6">
       <h2 className="mb-4 text-xl font-bold">미디어 인사이트</h2>
-      {posts.length > 0 ? (
-        <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
-          ref={listRef}
-        >
-          {posts ? (
-            posts.map((post: PostDataType) => {
-              const findInsightByPostId = mediaInsights.find(
-                (insight) => insight.id === post.id,
-              );
-
-              if (!findInsightByPostId) return;
-
-              return (
-                <div key={post.id}>
-                  <PostCard
-                    post={post}
-                    insights={findInsightByPostId.insights}
-                    onCardClick={() => setSelectedPostId(post.id)}
-                  />
-                </div>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">해당 데이터를 불러올 수 없습니다.</p>
-          )}
-        </div>
-      ) : (
+      {posts.length === 0 && !loading && (
         <p className="text-gray-500">데이터를 불러오는 중입니다...</p>
       )}
-      <div ref={sentinel}>
-        {loading && (
-          <div className="mt-4 flex items-center justify-center">
-            <LoadingSpinner />
-          </div>
+      <div
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+        ref={listRef}
+      >
+        {posts ? (
+          posts.map((post: PostDataType) => {
+            const findInsightByPostId = mediaInsights.find(
+              (insight) => insight.id === post.id,
+            );
+
+            if (!findInsightByPostId) return;
+
+            return (
+              <div key={post.id}>
+                <PostCard
+                  post={post}
+                  insights={findInsightByPostId.insights}
+                  onCardClick={() => setSelectedPostId(post.id)}
+                />
+              </div>
+            );
+          })
+        ) : (
+          <p className="text-gray-500">해당 데이터를 불러올 수 없습니다.</p>
         )}
       </div>
+      <div ref={sentinelRef} className="h-1" />
+      {loading && (
+        <div className="mt-4 flex items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      )}
       {/* 포스트 상세 인사이트 */}
       {selectedPostId && (
         <DetailInsightByPostDialog
