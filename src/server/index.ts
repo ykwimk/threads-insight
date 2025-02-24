@@ -12,7 +12,7 @@ export async function fetchProfileData(
   accessToken: string,
 ): Promise<ProfileResponseType> {
   const profileParams = new URLSearchParams({
-    fields: 'id',
+    fields: 'id,username,name,threads_profile_picture_url,threads_biography',
     access_token: accessToken,
   });
 
