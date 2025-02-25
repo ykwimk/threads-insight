@@ -20,10 +20,15 @@ export async function GET(request: NextRequest) {
 
     if (!profile.id || !posts) {
       return NextResponse.json(
-        { error: 'Either userId or mediaId must be provided.' },
+        { error: 'Either userId or posts must be provided.' },
         { status: 400 },
       );
     }
+
+    const filteredPosts = posts.data.filter(
+      (post) => post.media_type !== 'REPOST_FACADE',
+    ); // 리포스트 된 게시물 제외 필터
+
     const mediaIds = posts.data.map((post: PostDataType) => post.id);
     const mediaInsights = await fetchMediaInsights(
       mediaIds,
@@ -33,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       mediaInsights,
-      posts: posts.data,
+      posts: filteredPosts,
       nextCursor: posts.paging?.cursors?.after || null,
     });
   } catch (error: any) {
