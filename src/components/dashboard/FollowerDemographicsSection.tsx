@@ -38,7 +38,6 @@ export default function FollowerDemographicsSection() {
       const json = await res.json();
 
       setData(json.followerDemographics);
-      setLoading(false);
     } catch (err) {
       console.error(err);
     } finally {

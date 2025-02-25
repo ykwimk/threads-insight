@@ -19,7 +19,6 @@ export default function UserInsightsSection() {
 
       if (res.ok) {
         setData(json.userInsights);
-        setLoading(false);
       }
     } catch (err) {
       console.error(err);

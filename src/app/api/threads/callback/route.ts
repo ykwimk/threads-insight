@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// 리다이렉트 함수
 function redirectUrl(url: string, baseUrl: URL) {
   return NextResponse.redirect(new URL(url, baseUrl));
 }
