@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   Table,
   TableBody,
@@ -7,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { MediaInsightsDataByIdType } from '@/types';
+import { MediaInsightsDataType, PostDataType } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -17,56 +16,74 @@ import {
 } from '../ui/dialog';
 
 interface Props {
-  mediaInsights: MediaInsightsDataByIdType;
   selectedPostId: string;
+  findSelectedPost: PostDataType | null;
+  findSelectedMediaInsight: Array<MediaInsightsDataType>;
   onClose: () => void;
 }
 
 export default function DetailInsightByPostDialog({
-  mediaInsights,
   selectedPostId,
+  findSelectedPost,
+  findSelectedMediaInsight,
   onClose,
 }: Props) {
-  const getSelectedPostId = useMemo(() => {
-    return (
-      mediaInsights.find((insight) => insight.id === selectedPostId)
-        ?.insights || []
-    );
-  }, [mediaInsights, selectedPostId]);
+  if (!findSelectedPost) {
+    return null;
+  }
 
   return (
     <Dialog open={!!selectedPostId} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden">
         <DialogHeader>
-          <DialogTitle>📈 상세 인사이트</DialogTitle>
+          <DialogTitle>📝 포스트 상세 정보</DialogTitle>
           <DialogDescription>
-            선택한 게시물의 상세 인사이트를 확인하세요.
+            선택한 포스트의 상세 인사이트를 확인하세요.
           </DialogDescription>
         </DialogHeader>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>메트릭</TableHead>
-              <TableHead>값</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {getSelectedPostId.length > 0 ? (
-              getSelectedPostId.map((insight) => (
-                <TableRow key={insight.name}>
-                  <TableCell>{insight.title}</TableCell>
-                  <TableCell>{insight.values[0]?.value || 0}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={2} className="text-center">
-                  데이터 없음
-                </TableCell>
-              </TableRow>
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="mb-6">
+            {findSelectedPost.media_url && (
+              <img
+                src={findSelectedPost.media_url}
+                alt="미디어"
+                className="w-full object-cover"
+              />
             )}
-          </TableBody>
-        </Table>
+            {findSelectedPost.text && (
+              <div className="flex items-center justify-center break-keep py-4">
+                <span className="text-sm">{findSelectedPost.text}</span>
+              </div>
+            )}
+          </div>
+          <div>
+            <h3 className="mb-2 text-lg font-semibold">📊 인사이트</h3>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>메트릭</TableHead>
+                  <TableHead>값</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {findSelectedMediaInsight.length > 0 ? (
+                  findSelectedMediaInsight.map((insight) => (
+                    <TableRow key={insight.name}>
+                      <TableCell>{insight.title}</TableCell>
+                      <TableCell>{insight.values[0]?.value || 0}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={2} className="text-center">
+                      인사이트 데이터가 없습니다.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

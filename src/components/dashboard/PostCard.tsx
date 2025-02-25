@@ -44,7 +44,7 @@ export default function PostCard({ post, insights, onCardClick }: Props) {
         )}
       </CardHeader>
       <CardContent className="p-4">
-        <CardTitle className="mb-3 line-clamp-2 text-sm font-medium">
+        <CardTitle className="mb-3 line-clamp-2 min-h-10 text-sm font-medium">
           {post.text}
         </CardTitle>
         <div className="flex items-center justify-between text-gray-500">

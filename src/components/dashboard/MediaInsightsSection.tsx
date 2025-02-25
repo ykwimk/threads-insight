@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MediaInsightsDataByIdType, PostDataType } from '@/types';
 import LoadingSpinner from '../common/LoadingSpinner';
 import PostCard from './PostCard';
@@ -16,6 +16,17 @@ export default function MediaInsightsSection() {
   const listRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const findSelectedPost = useMemo(() => {
+    return posts.find((post) => post.id === selectedPostId) || null;
+  }, [posts, selectedPostId]);
+
+  const findSelectedMediaInsight = useMemo(() => {
+    return (
+      mediaInsights.find((insight) => insight.id === selectedPostId)
+        ?.insights || []
+    );
+  }, [mediaInsights, selectedPostId]);
 
   const fetchData = useCallback(
     async (cursor: string | null = null) => {
@@ -109,7 +120,8 @@ export default function MediaInsightsSection() {
       {selectedPostId && (
         <DetailInsightByPostDialog
           selectedPostId={selectedPostId}
-          mediaInsights={mediaInsights}
+          findSelectedPost={findSelectedPost}
+          findSelectedMediaInsight={findSelectedMediaInsight}
           onClose={() => setSelectedPostId('')}
         />
       )}
