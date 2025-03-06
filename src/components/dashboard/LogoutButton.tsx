@@ -11,7 +11,6 @@ export default function LogoutButton() {
 
     try {
       const res = await fetch('/api/threads/logout');
-      const json = await res.json();
 
       if (res.ok) {
         router.push('/');
