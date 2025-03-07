@@ -10,9 +10,6 @@
 !.yarn/releases
 !.yarn/versions
 
-# cert
-/.cert
-
 # testing
 /coverage
 
@@ -42,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# certificates
+certificates
