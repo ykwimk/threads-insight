@@ -3,7 +3,9 @@ import { PostDataType } from '@/types';
 import { fetchMediaInsights, fetchPostsData, fetchProfileData } from '@/server';
 
 export async function GET(request: NextRequest) {
-  const accessToken = request.cookies.get('threads_access_token')?.value;
+  const accessToken = request.cookies.get(
+    process.env.SERVICE_ACCESS_TOKEN!,
+  )?.value;
   if (!accessToken) {
     return NextResponse.json(
       { error: 'No access token found. Please login again.' },

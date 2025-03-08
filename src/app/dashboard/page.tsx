@@ -5,9 +5,10 @@ import DashboardHeader from '@/components/dashboard/DashboardHeader';
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get('threads_access_token')?.value;
+  const accessToken = cookieStore.get(process.env.SERVICE_ACCESS_TOKEN!)?.value;
+  const userId = cookieStore.get(process.env.SERVICE_USER_ID!)?.value;
 
-  if (!accessToken) {
+  if (!accessToken || !userId) {
     return redirect('/error');
   }
 

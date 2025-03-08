@@ -9,7 +9,9 @@ export async function GET(request: NextRequest) {
       { status: 200 },
     );
 
-    response.cookies.set('threads_access_token', '', {
+    response.cookies.set({
+      name: process.env.SERVICE_ACCESS_TOKEN!,
+      value: '',
       path: '/',
       httpOnly: true,
       secure: true,
@@ -17,7 +19,9 @@ export async function GET(request: NextRequest) {
       maxAge: -1,
     });
 
-    response.cookies.set('threads_user_id', '', {
+    response.cookies.set({
+      name: process.env.SERVICE_USER_ID!,
+      value: '',
       path: '/',
       httpOnly: true,
       secure: true,

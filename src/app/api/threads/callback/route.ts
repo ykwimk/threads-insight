@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     const response = redirectUrl('/dashboard', originalUrl);
 
     response.cookies.set({
-      name: 'threads_access_token',
+      name: process.env.SERVICE_ACCESS_TOKEN!,
       value: access_token,
       httpOnly: true,
       secure: true,
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
     });
 
     response.cookies.set({
-      name: 'threads_user_id',
+      name: process.env.SERVICE_USER_ID!,
       value: user_id,
       httpOnly: true,
       secure: true,
