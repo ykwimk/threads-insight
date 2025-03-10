@@ -38,7 +38,7 @@ export default function DetailInsightByPostDialog({
         <DialogHeader>
           <DialogTitle>📝 포스트 상세 정보</DialogTitle>
           <DialogDescription>
-            선택한 포스트의 상세 인사이트를 확인하세요.
+            선택한 포스트의 내용과 상세 인사이트를 확인하세요.
           </DialogDescription>
         </DialogHeader>
         <div className="flex-1 overflow-y-auto p-4">
@@ -57,20 +57,26 @@ export default function DetailInsightByPostDialog({
             )}
           </div>
           <div>
-            <h3 className="mb-2 text-lg font-semibold">📊 인사이트</h3>
-            <Table>
+            {/* <h3 className="mb-2 text-lg font-semibold">📊 인사이트</h3> */}
+            <Table className="border-color-gray-200 border">
               <TableHeader>
                 <TableRow>
-                  <TableHead>메트릭</TableHead>
-                  <TableHead>값</TableHead>
+                  <TableHead className="border-color-gray-200 border-r">
+                    메트릭(metric)
+                  </TableHead>
+                  <TableHead className="text-right">값(value)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {findSelectedMediaInsight.length > 0 ? (
                   findSelectedMediaInsight.map((insight) => (
                     <TableRow key={insight.name}>
-                      <TableCell>{insight.title}</TableCell>
-                      <TableCell>{insight.values[0]?.value || 0}</TableCell>
+                      <TableCell className="border-color-gray-200 border-r">
+                        {insight.title}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {insight.values[0]?.value || 0}
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
