@@ -17,24 +17,30 @@ export interface ErrorData {
 
 export type ProfileResponse = ProfileData | ErrorData;
 
-export interface UserInsightsResponseType {
-  data: Array<UserInsightsDataType>;
+export interface UserInsightsResult {
+  data: Array<UserInsightsData>;
+  paging: {
+    next: string;
+    previous: string;
+  };
 }
 
-export interface UserInsightsDataType {
+export interface UserInsightsData {
   name: string;
   period: string;
-  values?: Array<UserInsightsValueType>;
+  values?: Array<UserInsightsValues>;
   title: string;
   description: string;
   id: string;
-  total_value?: UserInsightsValueType;
+  total_value?: UserInsightsValues;
 }
 
-export interface UserInsightsValueType {
+export interface UserInsightsValues {
   value: number;
   end_time?: string;
 }
+
+export type UserInsightsResponse = UserInsightsResult | ErrorData;
 
 export type FollowerDemographicsResponseType = Array<FollowerDemographicsType>;
 

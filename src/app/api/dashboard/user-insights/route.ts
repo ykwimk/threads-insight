@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchProfileData, fetchUserInsights } from '@/server';
+import { fetchUserInsights } from '@/server';
+import { STATUS_CODE_MAP } from '@/constants';
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const accessToken = request.cookies.get(
     process.env.SERVICE_ACCESS_TOKEN!,
   )?.value;
+
   if (!accessToken) {
     return NextResponse.json(
       { error: 'No access token found. Please login again.' },
@@ -13,23 +15,24 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const profile = await fetchProfileData(accessToken);
+    const { profileId } = await request.json();
 
-    if (!profile.id) {
+    if (!profileId) {
       return NextResponse.json(
-        { error: 'Either userId or mediaId must be provided.' },
+        { error: 'Profile ID is required' },
         { status: 400 },
       );
     }
 
-    const userInsights = await fetchUserInsights(profile.id, accessToken);
+    const userInsights = await fetchUserInsights(profileId, accessToken);
+
+    if ('error' in userInsights) {
+      const status = STATUS_CODE_MAP[userInsights.error.code] || 400;
+      return NextResponse.json({ error: userInsights.error }, { status });
+    }
 
     return NextResponse.json({ userInsights });
   } catch (error: any) {
-    console.error('User Insights API 호출 중 오류:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error', details: error.message },
-      { status: 500 },
-    );
+    return NextResponse.json({ error }, { status: 500 });
   }
 }

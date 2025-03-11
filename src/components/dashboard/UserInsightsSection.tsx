@@ -1,24 +1,34 @@
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { UserInsightsDataType, UserInsightsValueType } from '@/types';
+import { UserInsightsData, UserInsightsValues } from '@/types';
 import DashboardCard from './DashboardCard';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const ChartComponent = dynamic(() => import('../common/Chart'), { ssr: false });
 
-export default function UserInsightsSection() {
-  const [data, setData] = useState<Array<UserInsightsDataType>>([]);
+interface Props {
+  profileId: string;
+}
+
+export default function UserInsightsSection({ profileId }: Props) {
+  const [data, setData] = useState<Array<UserInsightsData>>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchData = async () => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/dashboard/user-insights');
+      const res = await fetch('/api/dashboard/user-insights', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ profileId }),
+      });
       const json = await res.json();
 
       if (res.ok) {
-        setData(json.userInsights);
+        setData(json.userInsights.data);
       }
     } catch (err) {
       console.error(err);
@@ -32,7 +42,7 @@ export default function UserInsightsSection() {
 
     if (!views?.values) return [];
 
-    return views.values.map((entry: UserInsightsValueType) => ({
+    return views.values.map((entry: UserInsightsValues) => ({
       date: entry.end_time?.split('T')[0],
       views: entry.value,
     }));

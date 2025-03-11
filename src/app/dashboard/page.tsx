@@ -22,7 +22,7 @@ export default async function DashboardPage() {
   return (
     <>
       <DashboardHeader profile={profile} />
-      <DashboardContainer />
+      <DashboardContainer profile={profile} />
     </>
   );
 }

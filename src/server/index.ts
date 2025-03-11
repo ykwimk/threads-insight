@@ -4,7 +4,7 @@ import {
   MediaInsightsDataByIdType,
   PostResponseType,
   ProfileResponse,
-  UserInsightsResponseType,
+  UserInsightsResponse,
 } from '@/types';
 
 // 내 정보
@@ -24,9 +24,9 @@ export async function fetchProfileData(
 
 // 사용자 인사이트
 export async function fetchUserInsights(
-  userId: string,
+  profileId: string,
   accessToken: string,
-): Promise<UserInsightsResponseType> {
+): Promise<UserInsightsResponse> {
   const since = Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60; // 7일 전부터
   const until = Math.floor(Date.now() / 1000); // 현재 시간
 
@@ -38,18 +38,9 @@ export async function fetchUserInsights(
   });
 
   const response = await fetch(
-    `${THREADS_API_BASE}/${userId}/threads_insights?${userParams.toString()}`,
+    `${THREADS_API_BASE}/${profileId}/threads_insights?${userParams.toString()}`,
   );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(
-      `User Insights API request failed: ${JSON.stringify(errorData)}`,
-    );
-  }
-
-  const { data } = await response.json();
-  return data;
+  return response.json();
 }
 
 // 사용자 인사이트 (follower_demographics)
