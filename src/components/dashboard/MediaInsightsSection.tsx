@@ -93,8 +93,10 @@ export default function MediaInsightsSection() {
             const findInsightByPostId = mediaInsights.find(
               (insight) => insight.id === post.id,
             );
+            const isEmptyTextPost =
+              post.media_type === 'TEXT_POST' && !post.text;
 
-            if (!findInsightByPostId) return;
+            if (!findInsightByPostId || isEmptyTextPost) return;
 
             return (
               <div key={post.id}>

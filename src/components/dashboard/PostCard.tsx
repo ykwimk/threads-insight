@@ -27,7 +27,7 @@ export default function PostCard({ post, insights, onCardClick }: Props) {
   return (
     <Card
       key={post.id}
-      className="cursor-pointer overflow-hidden shadow-md transition hover:shadow-lg"
+      className="flex h-full cursor-pointer flex-col justify-between overflow-hidden shadow-md transition hover:shadow-lg"
       onClick={onCardClick}
     >
       <CardHeader className="relative p-0">
@@ -38,15 +38,17 @@ export default function PostCard({ post, insights, onCardClick }: Props) {
             className="h-40 w-full object-cover"
           />
         ) : (
-          <div className="flex h-40 items-center justify-center bg-gray-100 text-gray-500">
-            <span className="text-sm">텍스트 게시물</span>
+          <div className="p-4">
+            <p className="line-clamp-[8] text-sm">{post.text}</p>
           </div>
         )}
       </CardHeader>
       <CardContent className="p-4">
-        <CardTitle className="mb-3 line-clamp-2 min-h-10 text-sm font-medium">
-          {post.text}
-        </CardTitle>
+        {post.media_url && (
+          <CardTitle className="mb-3 line-clamp-2 min-h-10 text-sm font-medium">
+            {post.text}
+          </CardTitle>
+        )}
         <div className="flex items-center justify-between text-gray-500">
           <div className="flex items-center space-x-2">
             <Eye size={18} />
