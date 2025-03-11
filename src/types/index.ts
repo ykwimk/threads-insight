@@ -1,10 +1,21 @@
-export interface ProfileResponseType {
+export interface ProfileData {
   id: string;
   username: string;
   name: string;
   threads_profile_picture_url: string;
   threads_biography: string;
 }
+
+export interface ErrorData {
+  error: {
+    message: string;
+    type: string;
+    code: number;
+    fbtrace_id: string;
+  };
+}
+
+export type ProfileResponse = ProfileData | ErrorData;
 
 export interface UserInsightsResponseType {
   data: Array<UserInsightsDataType>;

@@ -3,14 +3,14 @@ import {
   FollowerDemographicsResponseType,
   MediaInsightsDataByIdType,
   PostResponseType,
-  ProfileResponseType,
+  ProfileResponse,
   UserInsightsResponseType,
 } from '@/types';
 
 // 내 정보
 export async function fetchProfileData(
   accessToken: string,
-): Promise<ProfileResponseType> {
+): Promise<ProfileResponse> {
   const profileParams = new URLSearchParams({
     fields: 'id,username,name,threads_profile_picture_url,threads_biography',
     access_token: accessToken,

@@ -3,33 +3,21 @@
 import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ProfileResponseType } from '@/types';
+import { ProfileData } from '@/types';
 import LogoutButton from './LogoutButton';
 
-export default function DashboardHeader() {
-  const [profile, setProfile] = useState<ProfileResponseType | null>(null);
+interface Props {
+  profile: ProfileData;
+}
+
+export default function DashboardHeader({ profile }: Props) {
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchData = async () => {
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/profile');
-      const json = await res.json();
-
-      if (res.ok) {
-        setProfile(json.profile);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
+  useEffect(() => {
+    if (profile) {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  }, [profile]);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white p-4 shadow-md dark:bg-gray-900">

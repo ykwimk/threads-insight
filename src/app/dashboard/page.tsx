@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import { fetchProfileData } from '@/server';
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -12,9 +13,15 @@ export default async function DashboardPage() {
     return redirect('/error');
   }
 
+  const profile = await fetchProfileData(accessToken);
+
+  if (!profile || 'error' in profile) {
+    return redirect('/error');
+  }
+
   return (
     <>
-      <DashboardHeader />
+      <DashboardHeader profile={profile} />
       <DashboardContainer />
     </>
   );

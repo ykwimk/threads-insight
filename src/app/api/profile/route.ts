@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   const accessToken = request.cookies.get(
     process.env.SERVICE_ACCESS_TOKEN!,
   )?.value;
+
   if (!accessToken) {
     return NextResponse.json(
       { error: 'No access token found. Please login again.' },
@@ -15,19 +16,12 @@ export async function GET(request: NextRequest) {
   try {
     const profile = await fetchProfileData(accessToken);
 
-    if (!profile.id) {
-      return NextResponse.json(
-        { error: 'Either userId must be provided.' },
-        { status: 400 },
-      );
+    if ('error' in profile && profile.error.code === 190) {
+      return NextResponse.json({ error: profile.error }, { status: 401 });
     }
 
     return NextResponse.json({ profile });
   } catch (error: any) {
-    console.error('Profile API 호출 중 오류:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error', details: error.message },
-      { status: 500 },
-    );
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
