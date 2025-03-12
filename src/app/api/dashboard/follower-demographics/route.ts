@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchFollowerDemographics, fetchProfileData } from '@/server';
+import { fetchFollowerDemographics } from '@/server';
+import { STATUS_CODE_MAP } from '@/constants';
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const accessToken = request.cookies.get(
     process.env.SERVICE_ACCESS_TOKEN!,
   )?.value;
+
   if (!accessToken) {
     return NextResponse.json(
       { error: 'No access token found. Please login again.' },
@@ -12,31 +14,33 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const { searchParams } = new URL(request.url);
-  const breakdown = searchParams.get('breakdown') || undefined;
-
   try {
-    const profile = await fetchProfileData(accessToken);
+    const { profileId, breakdown } = await request.json();
 
-    if (!profile.id) {
+    if (!profileId) {
       return NextResponse.json(
-        { error: 'Either userId or mediaId must be provided.' },
+        { error: 'Profile ID is required' },
         { status: 400 },
       );
     }
 
     const followerDemographics = await fetchFollowerDemographics(
-      profile.id,
+      profileId,
       accessToken,
       breakdown,
     );
 
-    return NextResponse.json({ followerDemographics });
+    if ('error' in followerDemographics) {
+      const status = STATUS_CODE_MAP[followerDemographics.error.code] || 400;
+      return NextResponse.json(
+        { error: followerDemographics.error },
+        { status },
+      );
+    }
+
+    return NextResponse.json({ results: followerDemographics });
   } catch (error: any) {
-    console.error('Follower demographics API 호출 중 오류:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error', details: error.message },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ error }, { status: 500 });
   }
 }

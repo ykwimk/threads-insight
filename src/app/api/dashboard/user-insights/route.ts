@@ -31,8 +31,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: userInsights.error }, { status });
     }
 
-    return NextResponse.json({ userInsights });
+    return NextResponse.json({ results: userInsights });
   } catch (error: any) {
+    console.error(error);
     return NextResponse.json({ error }, { status: 500 });
   }
 }

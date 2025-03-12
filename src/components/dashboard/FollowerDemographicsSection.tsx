@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { FollowerDemographicsResponseType } from '@/types';
+import { FollowerDemographicsData } from '@/types';
 import {
   Select,
   SelectContent,
@@ -21,23 +21,38 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import { ScrollArea } from '../ui/scroll-area';
 import { Card, CardContent, CardHeader } from '../ui/card';
 
-export default function FollowerDemographicsSection() {
-  const [data, setData] = useState<FollowerDemographicsResponseType | null>(
-    null,
-  );
+interface Props {
+  profileId: string;
+}
+
+export default function FollowerDemographicsSection({ profileId }: Props) {
+  const [data, setData] = useState<FollowerDemographicsData[] | null>(null);
   const [breakdown, setBreakdown] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const breakdownLabels: Record<string, string> = {
+    country: '국가',
+    city: '도시',
+    age: '연령대',
+    gender: '성별',
+  };
 
   const fetchData = async (breakdown?: string) => {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `/api/dashboard/follower-demographics?breakdown=${breakdown}`,
-      );
+      const res = await fetch(`/api/dashboard/follower-demographics`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ profileId, breakdown }),
+      });
       const json = await res.json();
 
-      setData(json.followerDemographics);
+      if (res.ok) {
+        setData(json.results.data);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -46,19 +61,9 @@ export default function FollowerDemographicsSection() {
   };
 
   const followerData = useMemo(() => {
-    if (data) {
-      return data[0].total_value.breakdowns[0].results;
-    }
-
-    return null;
+    if (!data) return;
+    return data[0].total_value.breakdowns[0].results;
   }, [data]);
-
-  const breakdownLabels: Record<string, string> = {
-    country: '국가',
-    city: '도시',
-    age: '연령대',
-    gender: '성별',
-  };
 
   return (
     <div className="h-full overflow-auto p-6">

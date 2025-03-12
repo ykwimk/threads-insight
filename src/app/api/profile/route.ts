@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: profile.error }, { status });
     }
 
-    return NextResponse.json({ profile });
+    return NextResponse.json({ results: profile });
   } catch (error: any) {
     return NextResponse.json({ error }, { status: 500 });
   }

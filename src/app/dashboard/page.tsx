@@ -16,6 +16,7 @@ export default async function DashboardPage() {
   const profile = await fetchProfileData(accessToken);
 
   if (!profile || 'error' in profile) {
+    console.error(profile.error);
     return redirect('/error');
   }
 

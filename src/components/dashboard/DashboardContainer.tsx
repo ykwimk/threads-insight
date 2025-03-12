@@ -27,7 +27,7 @@ export default function DashboardContainer({ profile }: Props) {
         {/* 사용자 인사이트 */}
         <UserInsightsSection profileId={profile.id} />
         {/* 팔로워들의 인구 통계 정보 */}
-        <FollowerDemographicsSection />
+        <FollowerDemographicsSection profileId={profile.id} />
         {/* 미디어 인사이트 */}
         <MediaInsightsSection />
       </div>

@@ -1,11 +1,4 @@
-export interface ProfileData {
-  id: string;
-  username: string;
-  name: string;
-  threads_profile_picture_url: string;
-  threads_biography: string;
-}
-
+// 에러 처리를 위한 타입 정의
 export interface ErrorData {
   error: {
     message: string;
@@ -15,9 +8,19 @@ export interface ErrorData {
   };
 }
 
+// 내 정보
+export interface ProfileData {
+  id: string;
+  username: string;
+  name: string;
+  threads_profile_picture_url: string;
+  threads_biography: string;
+}
+
 export type ProfileResponse = ProfileData | ErrorData;
 
-export interface UserInsightsResult {
+// 사용자 인사이트
+export interface UserInsightsResults {
   data: Array<UserInsightsData>;
   paging: {
     next: string;
@@ -40,32 +43,43 @@ export interface UserInsightsValues {
   end_time?: string;
 }
 
-export type UserInsightsResponse = UserInsightsResult | ErrorData;
+export type UserInsightsResponse = UserInsightsResults | ErrorData;
 
-export type FollowerDemographicsResponseType = Array<FollowerDemographicsType>;
+// 팔로워들의 인구 통계 정보
+export interface FollowerDemographicsResults {
+  data: Array<FollowerDemographicsData>;
+  paging: {
+    next: string;
+    previous: string;
+  };
+}
 
-export interface FollowerDemographicsType {
+export interface FollowerDemographicsData {
   description: string;
   id: string;
   name: string;
   period: string;
   title: string;
-  total_value: FollowerDemographicsTotalValueType;
+  total_value: FollowerDemographicsTotalValue;
 }
 
-export interface FollowerDemographicsTotalValueType {
-  breakdowns: Array<FollowerDemographicsBreakdownsType>;
+export interface FollowerDemographicsTotalValue {
+  breakdowns: Array<FollowerDemographicsBreakdowns>;
 }
 
-export interface FollowerDemographicsBreakdownsType {
+export interface FollowerDemographicsBreakdowns {
   dimension_keys: Array<string>;
-  results: Array<FollowerDemographicsResultsType>;
+  results: Array<FollowerDemographicsBreakdownsResults>;
 }
 
-export interface FollowerDemographicsResultsType {
+export interface FollowerDemographicsBreakdownsResults {
   dimension_values: Array<string>;
   value: number;
 }
+
+export type FollowerDemographicsResponse =
+  | FollowerDemographicsResults
+  | ErrorData;
 
 export interface PostResponseType {
   data: Array<PostDataType>;

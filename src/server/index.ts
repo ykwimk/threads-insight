@@ -1,6 +1,6 @@
 import { THREADS_API_BASE } from '@/constants';
 import {
-  FollowerDemographicsResponseType,
+  FollowerDemographicsResponse,
   MediaInsightsDataByIdType,
   PostResponseType,
   ProfileResponse,
@@ -45,10 +45,10 @@ export async function fetchUserInsights(
 
 // 사용자 인사이트 (follower_demographics)
 export async function fetchFollowerDemographics(
-  userId: string,
+  profileId: string,
   accessToken: string,
   breakdown?: string,
-): Promise<FollowerDemographicsResponseType> {
+): Promise<FollowerDemographicsResponse> {
   const followerParams = new URLSearchParams({
     access_token: accessToken,
     metric: 'follower_demographics',
@@ -59,20 +59,9 @@ export async function fetchFollowerDemographics(
   }
 
   const response = await fetch(
-    `${THREADS_API_BASE}/${userId}/threads_insights?${followerParams.toString()}`,
+    `${THREADS_API_BASE}/${profileId}/threads_insights?${followerParams.toString()}`,
   );
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    const message = errorData.error.error_user_msg
-      ? JSON.stringify(errorData.error.error_user_msg)
-      : `Follower demographics API request failed: ${JSON.stringify(errorData)}`;
-
-    throw new Error(message);
-  }
-
-  const { data } = await response.json();
-  return data;
+  return response.json();
 }
 
 // 포스트 정보

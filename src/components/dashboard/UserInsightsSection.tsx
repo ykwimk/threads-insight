@@ -28,7 +28,7 @@ export default function UserInsightsSection({ profileId }: Props) {
       const json = await res.json();
 
       if (res.ok) {
-        setData(json.userInsights.data);
+        setData(json.results.data);
       }
     } catch (err) {
       console.error(err);
