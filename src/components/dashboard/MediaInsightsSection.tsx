@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { MediaInsightsDataByIdType, PostDataType } from '@/types';
+import { MediaInsightsDataById, PostsData } from '@/types';
 import LoadingSpinner from '../common/LoadingSpinner';
 import PostCard from './PostCard';
 import DetailInsightByPostDialog from './DetailInsightByPostDialog';
 
-export default function MediaInsightsSection() {
-  const [mediaInsights, setMediaInsights] = useState<MediaInsightsDataByIdType>(
-    [],
-  );
-  const [posts, setPosts] = useState<PostDataType[]>([]);
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
+interface Props {
+  profileId: string;
+}
+
+export default function MediaInsightsSection({ profileId }: Props) {
+  const [mediaInsights, setMediaInsights] = useState<MediaInsightsDataById>([]);
+  const [posts, setPosts] = useState<PostsData[]>([]);
+  const [afterCursor, setAfterCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedPostId, setSelectedPostId] = useState<string>('');
 
@@ -29,25 +31,29 @@ export default function MediaInsightsSection() {
   }, [mediaInsights, selectedPostId]);
 
   const fetchData = useCallback(
-    async (cursor: string | null = null) => {
+    async (after: string | null = null) => {
       if (loading) return;
 
       setLoading(true);
 
       try {
-        const res = await fetch(
-          `/api/dashboard/media-insights${cursor ? `?after=${cursor}` : ''}`,
-        );
+        const res = await fetch(`/api/dashboard/media-insights`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ profileId, after }),
+        });
 
         const json = await res.json();
 
         if (res.ok) {
-          setMediaInsights((prev: MediaInsightsDataByIdType) => [
+          setMediaInsights((prev: MediaInsightsDataById) => [
             ...prev,
-            ...json.mediaInsights,
+            ...json.mediaData,
           ]);
-          setPosts((prev: PostDataType[]) => [...prev, ...json.posts]);
-          setNextCursor(json.nextCursor);
+          setPosts((prev: PostsData[]) => [...prev, ...json.posts]);
+          setAfterCursor(json.afterCursor);
         }
       } catch (err) {
         console.error(err);
@@ -63,20 +69,20 @@ export default function MediaInsightsSection() {
   }, []);
 
   useEffect(() => {
-    if (!sentinelRef.current || !nextCursor) return;
+    if (!sentinelRef.current || !afterCursor) return;
 
     if (observerRef.current) observerRef.current.disconnect();
 
     observerRef.current = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !loading) {
-        fetchData(nextCursor);
+        fetchData(afterCursor);
       }
     });
 
     observerRef.current.observe(sentinelRef.current);
 
     return () => observerRef.current?.disconnect();
-  }, [fetchData, nextCursor, loading]);
+  }, [fetchData, afterCursor, loading]);
 
   return (
     <div className="p-6">
@@ -89,7 +95,7 @@ export default function MediaInsightsSection() {
         ref={listRef}
       >
         {posts ? (
-          posts.map((post: PostDataType) => {
+          posts.map((post: PostsData) => {
             const findInsightByPostId = mediaInsights.find(
               (insight) => insight.id === post.id,
             );

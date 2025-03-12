@@ -1,20 +1,20 @@
 import { Eye, Heart, MessageSquare } from 'lucide-react';
-import { MediaInsightsDataType, PostDataType } from '@/types';
+import { MediaInsightsData, PostsData } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 interface Props {
-  post: PostDataType;
-  insights: Array<MediaInsightsDataType>;
+  post: PostsData;
+  insights: Array<MediaInsightsData>;
   onCardClick: () => void;
 }
 
 export default function PostCard({ post, insights, onCardClick }: Props) {
   const getInsightValueByName = (
-    insights: Array<MediaInsightsDataType>,
+    insights: Array<MediaInsightsData>,
     metric: string,
   ) => {
     const findInsightValueByMetric = insights.find(
-      (insight: MediaInsightsDataType) => insight.name === metric,
+      (insight: MediaInsightsData) => insight.name === metric,
     );
 
     return findInsightValueByMetric?.values[0]?.value || 0;

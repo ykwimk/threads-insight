@@ -81,32 +81,49 @@ export type FollowerDemographicsResponse =
   | FollowerDemographicsResults
   | ErrorData;
 
-export interface PostResponseType {
-  data: Array<PostDataType>;
-  paging?: any;
+// 포스트 정보
+export interface PostsResults {
+  data: Array<PostsData>;
+  paging: {
+    cursors: {
+      before: string;
+      after: string;
+    };
+    next?: string;
+    previous?: string;
+  };
 }
 
-export interface PostDataType {
+export interface PostsData {
   id: string;
   media_type?: string;
   text?: string;
   media_url?: string;
 }
 
-export interface MediaInsightsResponseType {
-  data: Array<MediaInsightsDataType>;
+export type PostsResponse = PostsResults | ErrorData;
+
+// 미디어 인사이트
+export interface MediaInsightsResults {
+  data: Array<MediaInsightsData>;
 }
 
-export interface MediaInsightsDataType {
+export interface MediaInsightsData {
   name: string;
   period: string;
-  values: any; // 임시
+  values: Array<MediaInsightsValues>;
   title: string;
   description: string;
   id: string;
 }
 
-export type MediaInsightsDataByIdType = Array<{
+export interface MediaInsightsValues {
+  value: number | string;
+}
+
+export type MediaInsightsResponse = MediaInsightsResults | ErrorData;
+
+export type MediaInsightsDataById = Array<{
   id: string | null;
-  insights: Array<MediaInsightsDataType>;
+  insights: Array<MediaInsightsData>;
 }>;

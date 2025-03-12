@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { MediaInsightsDataType, PostDataType } from '@/types';
+import { MediaInsightsData, PostsData } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -17,8 +17,8 @@ import {
 
 interface Props {
   selectedPostId: string;
-  findSelectedPost: PostDataType | null;
-  findSelectedMediaInsight: Array<MediaInsightsDataType>;
+  findSelectedPost: PostsData | null;
+  findSelectedMediaInsight: Array<MediaInsightsData>;
   onClose: () => void;
 }
 

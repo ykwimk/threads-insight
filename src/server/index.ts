@@ -1,8 +1,8 @@
 import { THREADS_API_BASE } from '@/constants';
 import {
   FollowerDemographicsResponse,
-  MediaInsightsDataByIdType,
-  PostResponseType,
+  MediaInsightsResponse,
+  PostsResponse,
   ProfileResponse,
   UserInsightsResponse,
 } from '@/types';
@@ -31,8 +31,8 @@ export async function fetchUserInsights(
   const until = Math.floor(Date.now() / 1000); // 현재 시간
 
   const userParams = new URLSearchParams({
-    access_token: accessToken,
     metric: 'views,likes,replies,reposts,quotes,followers_count',
+    access_token: accessToken,
     since: since.toString(),
     until: until.toString(),
   });
@@ -50,8 +50,8 @@ export async function fetchFollowerDemographics(
   breakdown?: string,
 ): Promise<FollowerDemographicsResponse> {
   const followerParams = new URLSearchParams({
-    access_token: accessToken,
     metric: 'follower_demographics',
+    access_token: accessToken,
   });
 
   if (breakdown) {
@@ -66,10 +66,10 @@ export async function fetchFollowerDemographics(
 
 // 포스트 정보
 export async function fetchPostsData(
-  userId: string,
+  profileId: string,
   accessToken: string,
   after?: string,
-): Promise<PostResponseType> {
+): Promise<PostsResponse> {
   const profileParams = new URLSearchParams({
     fields: 'id,text,media_url,media_type',
     access_token: accessToken,
@@ -80,42 +80,28 @@ export async function fetchPostsData(
   }
 
   const response = await fetch(
-    `${THREADS_API_BASE}/${userId}/threads?${profileParams.toString()}`,
+    `${THREADS_API_BASE}/${profileId}/threads?${profileParams.toString()}`,
   );
   return response.json();
 }
 
 // 미디어 인사이트
 export async function fetchMediaInsights(
-  mediaIds: string[],
+  mediaId: string,
   accessToken: string,
   after?: string,
-): Promise<MediaInsightsDataByIdType> {
+): Promise<MediaInsightsResponse> {
   const mediaParams = new URLSearchParams({
-    access_token: accessToken,
     metric: 'likes,replies,views,reposts,quotes,shares',
+    access_token: accessToken,
   });
 
   if (after) {
     mediaParams.append('after', after); // 다음 페이지를 위한 cursor
   }
 
-  const mediaData: MediaInsightsDataByIdType = [];
-
-  await Promise.all(
-    mediaIds.map(async (mediaId: string) => {
-      const url = `${THREADS_API_BASE}/${mediaId}/insights?${mediaParams.toString()}`;
-      const response = await fetch(url);
-      const { data } = await response.json();
-
-      if (response.ok) {
-        mediaData.push({ id: mediaId, insights: data });
-      } else {
-        console.error(`Failed to fetch insights for media ${mediaId}:`, data);
-        mediaData.push({ id: null, insights: [] });
-      }
-    }),
+  const response = await fetch(
+    `${THREADS_API_BASE}/${mediaId}/insights?${mediaParams.toString()}`,
   );
-
-  return mediaData;
+  return response.json();
 }
