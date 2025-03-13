@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MediaInsightsDataById, PostsData } from '@/types';
 import LoadingSpinner from '../common/LoadingSpinner';
-import PostCard from './PostCard';
 import DetailInsightByPostDialog from './DetailInsightByPostDialog';
+import PostList from './PostList';
 
 interface Props {
   profileId: string;
@@ -14,10 +14,6 @@ export default function MediaInsightsSection({ profileId }: Props) {
   const [afterCursor, setAfterCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedPostId, setSelectedPostId] = useState<string>('');
-
-  const listRef = useRef<HTMLDivElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const findSelectedPost = useMemo(() => {
     return posts.find((post) => post.id === selectedPostId) || null;
@@ -68,58 +64,24 @@ export default function MediaInsightsSection({ profileId }: Props) {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (!sentinelRef.current || !afterCursor) return;
-
-    if (observerRef.current) observerRef.current.disconnect();
-
-    observerRef.current = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !loading) {
-        fetchData(afterCursor);
-      }
-    });
-
-    observerRef.current.observe(sentinelRef.current);
-
-    return () => observerRef.current?.disconnect();
-  }, [fetchData, afterCursor, loading]);
-
   return (
     <div className="p-6">
       <h2 className="mb-4 text-xl font-bold">미디어 인사이트</h2>
-      {posts.length === 0 && !loading && (
-        <p className="text-gray-500">데이터를 불러오는 중입니다...</p>
+      {loading && posts.length === 0 ? (
+        <div className="mt-4 flex items-center justify-center">
+          <p className="text-gray-500">데이터를 불러오는 중입니다...</p>
+        </div>
+      ) : (
+        <PostList
+          posts={posts}
+          mediaInsights={mediaInsights}
+          afterCursor={afterCursor}
+          loading={loading}
+          fetchData={fetchData}
+          setSelectedPostId={setSelectedPostId}
+        />
       )}
-      <div
-        className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
-        ref={listRef}
-      >
-        {posts ? (
-          posts.map((post: PostsData) => {
-            const findInsightByPostId = mediaInsights.find(
-              (insight) => insight.id === post.id,
-            );
-            const isEmptyTextPost =
-              post.media_type === 'TEXT_POST' && !post.text;
-
-            if (!findInsightByPostId || isEmptyTextPost) return;
-
-            return (
-              <div key={post.id}>
-                <PostCard
-                  post={post}
-                  insights={findInsightByPostId.insights}
-                  onCardClick={() => setSelectedPostId(post.id)}
-                />
-              </div>
-            );
-          })
-        ) : (
-          <p className="text-gray-500">해당 데이터를 불러올 수 없습니다.</p>
-        )}
-      </div>
-      <div ref={sentinelRef} className="h-1" />
-      {loading && (
+      {loading && !!posts.length && (
         <div className="mt-4 flex items-center justify-center">
           <LoadingSpinner />
         </div>
