@@ -127,3 +127,32 @@ export type MediaInsightsDataById = Array<{
   id: string | null;
   insights: Array<MediaInsightsData>;
 }>;
+
+// 댓글
+export interface RepliesResults {
+  data: Array<RepliesData>;
+  paging: {
+    cursors: {
+      before: string;
+      after: string;
+    };
+  };
+}
+
+export interface RepliesData {
+  id: string;
+  text: string;
+  timestamp: string;
+  media_product_type: string;
+  media_type: string;
+  shortcode: string;
+  has_replies: boolean;
+  root_post: {
+    id: string;
+  };
+  replied_to: {
+    id: string;
+  };
+  is_reply: boolean;
+  hide_status: string;
+}

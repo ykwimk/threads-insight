@@ -105,3 +105,18 @@ export async function fetchMediaInsights(
   );
   return response.json();
 }
+
+// 댓글
+export async function fetchReplies(mediaId: string, accessToken: string) {
+  const repliesParams = new URLSearchParams({
+    fields:
+      'id,text,timestamp,media_type,username,permalink,has_replies,replied_to,is_reply,hide_status',
+    reverse: 'false',
+    access_token: accessToken,
+  });
+
+  const response = await fetch(
+    `${THREADS_API_BASE}/${mediaId}/replies?${repliesParams.toString()}`,
+  );
+  return response.json();
+}
