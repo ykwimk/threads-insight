@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
+import PostReplies from './PostReplies';
 
 interface Props {
   selectedPostId: string;
@@ -56,7 +57,7 @@ export default function DetailInsightByPostDialog({
               </div>
             )}
           </div>
-          <div>
+          <div className="mb-6">
             {/* <h3 className="mb-2 text-lg font-semibold">📊 인사이트</h3> */}
             <Table className="border-color-gray-200 border">
               <TableHeader>
@@ -88,6 +89,9 @@ export default function DetailInsightByPostDialog({
                 )}
               </TableBody>
             </Table>
+          </div>
+          <div>
+            <PostReplies />
           </div>
         </div>
       </DialogContent>
