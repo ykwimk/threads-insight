@@ -155,4 +155,5 @@ export interface RepliesData {
   };
   is_reply: boolean;
   hide_status: string;
+  username: string;
 }
