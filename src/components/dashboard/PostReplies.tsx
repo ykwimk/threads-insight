@@ -47,7 +47,7 @@ export default function PostReplies({ selectedPostId }: Props) {
       <h3 className="mb-2 text-lg font-semibold">💬 댓글</h3>
       {loading ? (
         <Skeleton className="h-16 w-full rounded-md" />
-      ) : replies && replies.length >= 0 ? (
+      ) : replies && replies.length > 0 ? (
         <div className="max-h-[300px] space-y-4 overflow-y-auto py-2">
           {replies.map((reply) => (
             <div key={reply.id} className="rounded-md border p-3 shadow-sm">
@@ -62,7 +62,7 @@ export default function PostReplies({ selectedPostId }: Props) {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-gray-500">댓글이 없습니다.</p>
+        <p className="text-center text-sm text-gray-500">댓글이 없습니다.</p>
       )}
     </div>
   );
