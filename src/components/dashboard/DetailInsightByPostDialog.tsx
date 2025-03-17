@@ -91,7 +91,7 @@ export default function DetailInsightByPostDialog({
             </Table>
           </div>
           <div>
-            <PostReplies />
+            <PostReplies selectedPostId={selectedPostId} />
           </div>
         </div>
       </DialogContent>

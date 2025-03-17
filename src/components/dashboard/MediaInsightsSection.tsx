@@ -86,15 +86,13 @@ export default function MediaInsightsSection({ profileId }: Props) {
           <LoadingSpinner />
         </div>
       )}
-      {/* 포스트 상세 인사이트 */}
-      {selectedPostId && (
-        <DetailInsightByPostDialog
-          selectedPostId={selectedPostId}
-          findSelectedPost={findSelectedPost}
-          findSelectedMediaInsight={findSelectedMediaInsight}
-          onClose={() => setSelectedPostId('')}
-        />
-      )}
+      {/* 포스트 상세 인사이트 모달 */}
+      <DetailInsightByPostDialog
+        selectedPostId={selectedPostId}
+        findSelectedPost={findSelectedPost}
+        findSelectedMediaInsight={findSelectedMediaInsight}
+        onClose={() => setSelectedPostId('')}
+      />
     </div>
   );
 }
