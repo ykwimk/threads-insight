@@ -143,9 +143,8 @@ export interface RepliesData {
   id: string;
   text: string;
   timestamp: string;
-  media_product_type: string;
   media_type: string;
-  shortcode: string;
+  permalink: string;
   has_replies: boolean;
   root_post: {
     id: string;

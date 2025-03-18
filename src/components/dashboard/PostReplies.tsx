@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { RepliesData } from '@/types';
 import { Skeleton } from '../ui/skeleton';
 
@@ -52,7 +53,16 @@ export default function PostReplies({ selectedPostId }: Props) {
           {replies.map((reply) => (
             <div key={reply.id} className="rounded-md border p-3 shadow-sm">
               <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">@{reply.username}</span>
+                <span className="font-medium">
+                  <Link
+                    href={reply.permalink}
+                    className="underline"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    @{reply.username}
+                  </Link>
+                </span>
                 <span className="text-xs text-gray-500">
                   {new Date(reply.timestamp).toLocaleString()}
                 </span>
