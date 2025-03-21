@@ -48,7 +48,7 @@ export default function PostRepliesTree({ replies, depth = 0 }: Props) {
           </AccordionTrigger>
           <AccordionContent>
             {reply.children?.length > 0 && (
-              <div className="ml-4 border-l-2 border-gray-200 pl-4">
+              <div className="ml-2.5 border-l-2 border-gray-200 pl-2.5">
                 <PostRepliesTree replies={reply.children} depth={depth + 1} />
               </div>
             )}
