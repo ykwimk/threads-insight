@@ -15,11 +15,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-import { Button } from '../ui/button';
-import LoadingSpinner from '../common/LoadingSpinner';
-import { ScrollArea } from '../ui/scroll-area';
-import { Card, CardContent, CardHeader } from '../ui/card';
+} from '../../ui/select';
+import { Button } from '../../ui/button';
+import LoadingSpinner from '../../common/LoadingSpinner';
+import { ScrollArea } from '../../ui/scroll-area';
+import { Card, CardContent, CardHeader } from '../../ui/card';
 
 interface Props {
   profileId: string;

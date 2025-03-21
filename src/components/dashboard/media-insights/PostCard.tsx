@@ -1,6 +1,6 @@
 import { Eye, Heart, MessageSquare } from 'lucide-react';
 import { MediaInsightsData, PostsData } from '@/types';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 
 interface Props {
   post: PostsData;

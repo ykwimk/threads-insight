@@ -5,7 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '../ui/dialog';
+} from '../../ui/dialog';
 import PostReplies from './PostReplies';
 import PostInsightsTable from './PostInsightsTable';
 

@@ -12,7 +12,7 @@ interface Props {
   value: number | string;
 }
 
-export default function DashboardCard({ title, description, value }: Props) {
+export default function UserInsightsCard({ title, description, value }: Props) {
   return (
     <Card>
       <CardHeader>

@@ -2,9 +2,9 @@
 
 import { useEffect } from 'react';
 import { ProfileData } from '@/types';
-import UserInsightsSection from './UserInsightsSection';
-import MediaInsightsSection from './MediaInsightsSection';
-import FollowerDemographicsSection from './FollowerDemographicsSection';
+import UserInsightsSection from './user-insights/UserInsightsSection';
+import MediaInsightsSection from './media-insights/MediaInsightsSection';
+import FollowerDemographicsSection from './follower-demographics/FollowerDemographicsSection';
 
 interface Props {
   profile: ProfileData;

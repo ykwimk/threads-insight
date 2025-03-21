@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { RepliesData } from '@/types';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from '../../ui/skeleton';
 
 interface Props {
   selectedPostId: string;

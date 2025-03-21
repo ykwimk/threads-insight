@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProfileData } from '@/types';
-import LogoutButton from './LogoutButton';
+import LogoutButton from '../common/LogoutButton';
 
 interface Props {
   profile: ProfileData;

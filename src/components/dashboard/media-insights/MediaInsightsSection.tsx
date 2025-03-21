@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MediaInsightsDataById, PostsData } from '@/types';
-import LoadingSpinner from '../common/LoadingSpinner';
+import LoadingSpinner from '../../common/LoadingSpinner';
 import DetailInsightByPostDialog from './DetailInsightByPostDialog';
 import PostList from './PostList';
 
