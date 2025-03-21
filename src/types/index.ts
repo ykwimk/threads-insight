@@ -1,4 +1,4 @@
-// 에러 처리를 위한 타입 정의
+// 에러 데이터
 export interface ErrorData {
   error: {
     message: string;
@@ -7,6 +7,22 @@ export interface ErrorData {
     fbtrace_id: string;
   };
 }
+
+// 페이징 커서
+export interface Cursors {
+  before: string;
+  after: string;
+}
+
+// 페이징
+export interface Paging {
+  cursors: Cursors;
+  next: string;
+  previous: string;
+}
+
+// API 응답
+export type ApiResponse<T> = T | ErrorData;
 
 // 내 정보
 export interface ProfileData {
@@ -17,15 +33,12 @@ export interface ProfileData {
   threads_biography: string;
 }
 
-export type ProfileResponse = ProfileData | ErrorData;
+export type ProfileResponse = ApiResponse<ProfileData>;
 
 // 사용자 인사이트
 export interface UserInsightsResults {
   data: Array<UserInsightsData>;
-  paging: {
-    next: string;
-    previous: string;
-  };
+  paging: Pick<Paging, 'next' | 'previous'>;
 }
 
 export interface UserInsightsData {
@@ -43,15 +56,12 @@ export interface UserInsightsValues {
   end_time?: string;
 }
 
-export type UserInsightsResponse = UserInsightsResults | ErrorData;
+export type UserInsightsResponse = ApiResponse<UserInsightsResults>;
 
 // 팔로워들의 인구 통계 정보
 export interface FollowerDemographicsResults {
   data: Array<FollowerDemographicsData>;
-  paging: {
-    next: string;
-    previous: string;
-  };
+  paging: Pick<Paging, 'next' | 'previous'>;
 }
 
 export interface FollowerDemographicsData {
@@ -78,20 +88,12 @@ export interface FollowerDemographicsBreakdownsResults {
 }
 
 export type FollowerDemographicsResponse =
-  | FollowerDemographicsResults
-  | ErrorData;
+  ApiResponse<FollowerDemographicsResults>;
 
 // 포스트 정보
 export interface PostsResults {
   data: Array<PostsData>;
-  paging: {
-    cursors: {
-      before: string;
-      after: string;
-    };
-    next?: string;
-    previous?: string;
-  };
+  paging: Pick<Paging, 'cursors'> & Partial<Pick<Paging, 'next' | 'previous'>>;
 }
 
 export interface PostsData {
@@ -101,7 +103,7 @@ export interface PostsData {
   media_url?: string;
 }
 
-export type PostsResponse = PostsResults | ErrorData;
+export type PostsResponse = ApiResponse<PostsResults>;
 
 // 미디어 인사이트
 export interface MediaInsightsResults {
@@ -121,7 +123,7 @@ export interface MediaInsightsValues {
   value: number | string;
 }
 
-export type MediaInsightsResponse = MediaInsightsResults | ErrorData;
+export type MediaInsightsResponse = ApiResponse<MediaInsightsResults>;
 
 export type MediaInsightsDataById = Array<{
   id: string | null;
@@ -131,12 +133,7 @@ export type MediaInsightsDataById = Array<{
 // 댓글
 export interface RepliesResults {
   data: Array<RepliesData>;
-  paging: {
-    cursors: {
-      before: string;
-      after: string;
-    };
-  };
+  paging: Pick<Paging, 'cursors'>;
 }
 
 export interface RepliesData {
@@ -146,12 +143,8 @@ export interface RepliesData {
   media_type: string;
   permalink: string;
   has_replies: boolean;
-  root_post: {
-    id: string;
-  };
-  replied_to: {
-    id: string;
-  };
+  root_post: { id: string };
+  replied_to: { id: string };
   is_reply: boolean;
   hide_status: string;
   username: string;
