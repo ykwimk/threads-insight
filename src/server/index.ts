@@ -106,9 +106,9 @@ export async function fetchMediaInsights(
   return response.json();
 }
 
-// 댓글
-export async function fetchReplies(mediaId: string, accessToken: string) {
-  const repliesParams = new URLSearchParams({
+// 대화 (댓글 & 대댓글)
+export async function fetchConversation(mediaId: string, accessToken: string) {
+  const params = new URLSearchParams({
     fields:
       'id,text,timestamp,media_type,username,permalink,has_replies,replied_to,is_reply,hide_status',
     reverse: 'false',
@@ -116,7 +116,7 @@ export async function fetchReplies(mediaId: string, accessToken: string) {
   });
 
   const response = await fetch(
-    `${THREADS_API_BASE}/${mediaId}/replies?${repliesParams.toString()}`,
+    `${THREADS_API_BASE}/${mediaId}/conversation?${params.toString()}`,
   );
   return response.json();
 }

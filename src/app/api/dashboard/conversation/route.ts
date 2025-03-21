@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MediaInsightsDataById, PostsData } from '@/types';
-import { fetchMediaInsights, fetchPostsData, fetchReplies } from '@/server';
+import { fetchConversation } from '@/server';
 import { STATUS_CODE_MAP } from '@/constants';
 
 export async function POST(request: NextRequest) {
@@ -18,7 +17,7 @@ export async function POST(request: NextRequest) {
   try {
     const { mediaId } = await request.json();
 
-    const replies = await fetchReplies(mediaId, accessToken);
+    const conversation = await fetchConversation(mediaId, accessToken);
 
     if (!mediaId) {
       return NextResponse.json(
@@ -27,12 +26,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if ('error' in replies) {
-      const status = STATUS_CODE_MAP[replies.error.code] || 400;
-      return NextResponse.json({ error: replies.error }, { status });
+    if ('error' in conversation) {
+      const status = STATUS_CODE_MAP[conversation.error.code] || 400;
+      return NextResponse.json({ error: conversation.error }, { status });
     }
 
-    return NextResponse.json({ results: replies });
+    return NextResponse.json({ results: conversation });
   } catch (error: any) {
     console.error(error);
     return NextResponse.json({ error }, { status: 500 });

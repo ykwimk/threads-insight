@@ -9,7 +9,7 @@ interface Props {
 
 export default function PostReplies({ selectedPostId }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [replies, setReplies] = useState<RepliesData[]>([]);
+  const [conversation, setConversation] = useState<RepliesData[]>([]);
 
   const fetchData = useCallback(async () => {
     if (loading) return;
@@ -17,7 +17,7 @@ export default function PostReplies({ selectedPostId }: Props) {
     setLoading(true);
 
     try {
-      const res = await fetch(`/api/dashboard/replies`, {
+      const res = await fetch(`/api/dashboard/conversation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export default function PostReplies({ selectedPostId }: Props) {
       const json = await res.json();
 
       if (res.ok) {
-        setReplies(json.results.data);
+        setConversation(json.results.data);
       }
     } catch (err) {
       console.error(err);
@@ -41,16 +41,16 @@ export default function PostReplies({ selectedPostId }: Props) {
     fetchData();
   }, []);
 
-  if (!replies) return null;
+  if (!conversation) return null;
 
   return (
     <div className="flex flex-col">
       <h3 className="mb-2 text-lg font-semibold">💬 댓글</h3>
       {loading ? (
         <Skeleton className="h-16 w-full rounded-md" />
-      ) : replies && replies.length > 0 ? (
+      ) : conversation && conversation.length > 0 ? (
         <div className="max-h-[300px] space-y-4 overflow-y-auto py-2">
-          {replies.map((reply) => (
+          {conversation.map((reply) => (
             <div key={reply.id} className="rounded-md border p-3 shadow-sm">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium">
