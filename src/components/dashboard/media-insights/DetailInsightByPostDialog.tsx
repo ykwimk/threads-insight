@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../../ui/dialog';
-import PostReplies from './PostReplies';
+import PostConversation from './PostConversation';
 import PostInsightsTable from './PostInsightsTable';
 
 interface Props {
@@ -56,8 +56,8 @@ export default function DetailInsightByPostDialog({
             />
           </div>
           <div>
-            {/* 포스트 댓글 */}
-            <PostReplies selectedPostId={selectedPostId} />
+            {/* 포스트 대화 (댓글 & 대댓글) */}
+            <PostConversation selectedPostId={selectedPostId} />
           </div>
         </div>
       </DialogContent>

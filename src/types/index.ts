@@ -130,13 +130,14 @@ export type MediaInsightsDataById = Array<{
   insights: Array<MediaInsightsData>;
 }>;
 
-// 댓글
-export interface RepliesResults {
-  data: Array<RepliesData>;
+// 대화 (댓글 & 대댓글)
+export interface ConversationResults {
+  data: Array<ConversationData>;
   paging: Pick<Paging, 'cursors'>;
 }
 
-export interface RepliesData {
+export interface ConversationData
+  extends Required<{ children: Array<ConversationData> }> {
   id: string;
   text: string;
   timestamp: string;
@@ -149,3 +150,5 @@ export interface RepliesData {
   hide_status: string;
   username: string;
 }
+
+export type ConversationResponse = ApiResponse<ConversationResults>;

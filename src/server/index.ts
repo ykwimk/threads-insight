@@ -1,5 +1,6 @@
 import { THREADS_API_BASE } from '@/constants';
 import {
+  ConversationResponse,
   FollowerDemographicsResponse,
   MediaInsightsResponse,
   PostsResponse,
@@ -107,7 +108,10 @@ export async function fetchMediaInsights(
 }
 
 // 대화 (댓글 & 대댓글)
-export async function fetchConversation(mediaId: string, accessToken: string) {
+export async function fetchConversation(
+  mediaId: string,
+  accessToken: string,
+): Promise<ConversationResponse> {
   const params = new URLSearchParams({
     fields:
       'id,text,timestamp,media_type,username,permalink,has_replies,replied_to,is_reply,hide_status',
