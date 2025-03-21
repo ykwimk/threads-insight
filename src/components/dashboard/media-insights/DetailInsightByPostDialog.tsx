@@ -28,7 +28,7 @@ export default function DetailInsightByPostDialog({
 
   return (
     <Dialog open={!!selectedPostId} onOpenChange={onClose}>
-      <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>📝 포스트 상세 정보</DialogTitle>
           <DialogDescription>
