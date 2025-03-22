@@ -76,6 +76,16 @@ export default function UserInsightsSection({ profileId }: Props) {
     <div className="p-6">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
         <UserInsightsCard
+          title={followersCount?.title ?? '팔로워 수'}
+          description={followersCount?.description}
+          value={followersCount?.total_value?.value || 0}
+        />
+        <UserInsightsCard
+          title={reposts?.title ?? '총 리포스트수'}
+          description={reposts?.description}
+          value={reposts?.total_value?.value || 0}
+        />
+        <UserInsightsCard
           title={likes?.title ?? '총 좋아요수'}
           description={likes?.description}
           value={likes?.total_value?.value || 0}
@@ -84,16 +94,6 @@ export default function UserInsightsSection({ profileId }: Props) {
           title={replies?.title ?? '총 리플'}
           description={replies?.description}
           value={replies?.total_value?.value || 0}
-        />
-        <UserInsightsCard
-          title={followersCount?.title ?? '팔로워 수'}
-          description={followersCount?.description}
-          value={followersCount?.total_value?.value || 0}
-        />
-        <UserInsightsCard
-          title={reposts?.title ?? '총 조회수'}
-          description={reposts?.description}
-          value={reposts?.total_value?.value || 0}
         />
       </div>
       {/* 프로필 조회수 변화 */}
