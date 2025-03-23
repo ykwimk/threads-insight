@@ -9,26 +9,30 @@ import {
 
 interface Props {
   data: Array<{ [key: string]: any }>;
+  config?: { [key: string]: any };
+  nameKey?: string;
 }
 
-export default function Chart({ data }: Props) {
-  const chartConfig = {
+export default function Chart({
+  data,
+  config = {
     desktop: {
       label: 'Desktop',
-      color: '#2563eb',
+      color: 'hsl(var(--chart-1))',
     },
     mobile: {
       label: 'Mobile',
-      color: '#60a5fa',
+      color: 'hsl(var(--chart-2))',
     },
-  };
-
+  },
+  nameKey,
+}: Props) {
   if (data.length === 0) {
-    return <p className="text-gray-500">📉 데이터 없음</p>;
+    return <p className="text-center text-gray-500">📉 데이터 없음</p>;
   }
 
   return (
-    <ChartContainer className="min-h-[250px]" config={chartConfig}>
+    <ChartContainer className="min-h-[250px] w-full" config={config}>
       <LineChart data={data} width={500} height={250}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
@@ -46,6 +50,7 @@ export default function Chart({ data }: Props) {
           dataKey="views"
           stroke="hsl(var(--chart-1))"
           strokeWidth={2}
+          name={nameKey}
           dot={{ r: 4 }}
         />
       </LineChart>

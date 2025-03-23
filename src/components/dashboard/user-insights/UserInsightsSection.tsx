@@ -99,7 +99,7 @@ export default function UserInsightsSection({ profileId }: Props) {
       {/* 프로필 조회수 변화 */}
       <div className="mt-8">
         <h2 className="mb-4 text-xl font-bold">프로필 조회수 변화</h2>
-        <ChartComponent data={profileViews} />
+        <ChartComponent data={profileViews} nameKey="조회수" />
       </div>
     </div>
   );
