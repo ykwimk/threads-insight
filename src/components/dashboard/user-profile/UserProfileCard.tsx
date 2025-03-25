@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export function UserProfileCard() {
   const dummy = {
@@ -15,7 +16,22 @@ export function UserProfileCard() {
 
   return (
     <div className="p-6 pb-0">
-      <Card className="mx-auto p-4">
+      <Card className="relative mx-auto p-4">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/5 backdrop-blur-md">
+          <div className="w-full text-center">
+            <h3 className="text-center text-lg font-semibold">
+              내 Threads 성향 알아보기
+            </h3>
+            <p className="mx-auto mt-2 max-w-xs text-center text-sm">
+              당신이 남긴 글과 댓글을 바탕으로
+              <br />
+              말투, 관심사, 활동 스타일을 AI가 요약해드릴게요.
+            </p>
+            <Button size="sm" className="mt-3 px-4 py-5 text-sm">
+              분석하기
+            </Button>
+          </div>
+        </div>
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <Link
