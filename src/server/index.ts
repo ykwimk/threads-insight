@@ -72,7 +72,7 @@ export async function fetchPostsData(
   after?: string,
 ): Promise<PostsResponse> {
   const profileParams = new URLSearchParams({
-    fields: 'id,text,media_url,media_type',
+    fields: 'id,text,media_type,media_url,timestamp,children',
     access_token: accessToken,
   });
 

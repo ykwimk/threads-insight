@@ -1,5 +1,6 @@
 import { Eye, Heart, MessageSquare } from 'lucide-react';
 import { MediaInsightsData, PostsData } from '@/types';
+import { formatRelativeTime } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 
 interface Props {
@@ -49,18 +50,25 @@ export default function PostCard({ post, insights, onCardClick }: Props) {
             {post.text}
           </CardTitle>
         )}
-        <div className="flex items-center justify-between text-gray-500">
-          <div className="flex items-center space-x-2">
-            <Eye size={18} />
-            <span className="text-sm">{views}</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-start gap-4 text-gray-500">
+            <div className="flex items-center space-x-1">
+              <Eye size={14} />
+              <span className="text-sm">{views}</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <Heart size={14} />
+              <span className="text-sm">{likes}</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <MessageSquare size={14} />
+              <span className="text-sm">{replies}</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Heart size={18} />
-            <span className="text-sm">{likes}</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <MessageSquare size={18} />
-            <span className="text-sm">{replies}</span>
+          <div className="mb-1 text-right">
+            <div className="inline-block text-xs text-gray-500">
+              {formatRelativeTime(post.timestamp)}
+            </div>
           </div>
         </div>
       </CardContent>

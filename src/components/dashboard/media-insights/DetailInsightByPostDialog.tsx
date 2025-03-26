@@ -8,6 +8,7 @@ import {
 } from '../../ui/dialog';
 import PostConversation from './PostConversation';
 import PostInsightsTable from './PostInsightsTable';
+import PostContents from './PostContents';
 
 interface Props {
   selectedPostId: string;
@@ -36,29 +37,18 @@ export default function DetailInsightByPostDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="flex-1 overflow-y-auto p-4">
-          <div className="mb-6">
-            {findSelectedPost.media_url && (
-              <img
-                src={findSelectedPost.media_url}
-                alt="미디어"
-                className="w-full object-cover"
-              />
-            )}
-            {findSelectedPost.text && (
-              <div className="flex items-center justify-center break-keep py-4">
-                <span className="text-sm">{findSelectedPost.text}</span>
-              </div>
-            )}
-          </div>
-          <div className="mb-6">
+          <section className="mb-6">
+            <PostContents findSelectedPost={findSelectedPost} />
+          </section>
+          <section className="mb-6">
             <PostInsightsTable
               findSelectedMediaInsight={findSelectedMediaInsight}
             />
-          </div>
-          <div>
+          </section>
+          <section>
             {/* 포스트 대화 (댓글 & 대댓글) */}
             <PostConversation selectedPostId={selectedPostId} />
-          </div>
+          </section>
         </div>
       </DialogContent>
     </Dialog>

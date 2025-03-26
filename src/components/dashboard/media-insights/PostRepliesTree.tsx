@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { formatRelativeTime } from '@/lib/utils';
 
 interface Props {
   replies: ConversationData[];
@@ -28,7 +29,7 @@ export default function PostRepliesTree({ replies, depth = 0 }: Props) {
             disabled={!reply.children?.length}
           >
             <div className="flex-1">
-              <div className="flex w-full items-center justify-between text-sm">
+              <div className="flex w-full items-center justify-start gap-2 text-sm">
                 <span className="font-medium">
                   <Link
                     href={reply.permalink}
@@ -40,7 +41,7 @@ export default function PostRepliesTree({ replies, depth = 0 }: Props) {
                   </Link>
                 </span>
                 <span className="text-xs text-gray-500">
-                  {new Date(reply.timestamp).toLocaleString()}
+                  {formatRelativeTime(reply.timestamp)}
                 </span>
               </div>
               <p className="mt-2 text-sm">{reply.text || '미디어 첨부'}</p>

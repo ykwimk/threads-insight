@@ -64,7 +64,9 @@ export default function PostList({
           );
         })
       ) : (
-        <p className="text-gray-500">해당 데이터를 불러올 수 없습니다.</p>
+        <p className="text-center text-gray-500">
+          해당 데이터를 불러올 수 없습니다.
+        </p>
       )}
       <div ref={sentinelRef} className="h-1" />
     </div>

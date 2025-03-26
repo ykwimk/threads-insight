@@ -17,7 +17,7 @@ export function UserProfileCard() {
   return (
     <div className="p-6 pb-0">
       <Card className="relative mx-auto p-4">
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/5 backdrop-blur-md">
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/5 backdrop-blur-md">
           <div className="w-full text-center">
             <h3 className="text-center text-lg font-semibold">
               내 Threads 성향 알아보기

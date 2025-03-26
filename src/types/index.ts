@@ -98,9 +98,13 @@ export interface PostsResults {
 
 export interface PostsData {
   id: string;
-  media_type?: string;
   text?: string;
+  media_type?: string;
   media_url?: string;
+  timestamp: string;
+  children?: {
+    data?: Array<{ id: string }>;
+  };
 }
 
 export type PostsResponse = ApiResponse<PostsResults>;
