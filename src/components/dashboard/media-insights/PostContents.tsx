@@ -1,3 +1,10 @@
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import { formatRelativeTime } from '@/lib/utils';
 import { PostsData } from '@/types';
 
@@ -13,24 +20,48 @@ export default function PostContents({ findSelectedPost }: Props) {
       </p>
     );
 
+  const { media_type, media_url, text, timestamp, children } = findSelectedPost;
+
   return (
     <div>
       <div className="flex items-center justify-end">
         <span className="text-xs text-gray-500">
-          {formatRelativeTime(findSelectedPost.timestamp)}
+          {formatRelativeTime(timestamp)}
         </span>
       </div>
-      {findSelectedPost.media_url && (
-        <img
-          src={findSelectedPost.media_url}
-          alt="미디어"
-          className="w-full object-cover pt-4"
-        />
-      )}
+      {media_url &&
+        (media_type === 'CAROUSEL_ALBUM' && children ? (
+          <Carousel>
+            <CarouselContent>
+              <CarouselItem>
+                <img
+                  src={media_url}
+                  alt="미디어"
+                  className="w-full object-cover pt-4"
+                />
+              </CarouselItem>
+              <CarouselItem>
+                <img
+                  src={media_url}
+                  alt="미디어"
+                  className="w-full object-cover pt-4"
+                />
+              </CarouselItem>
+            </CarouselContent>
+            <CarouselNext className="right-2" />
+            <CarouselPrevious className="left-2" />
+          </Carousel>
+        ) : (
+          <img
+            src={media_url}
+            alt="미디어"
+            className="w-full object-cover pt-4"
+          />
+        ))}
       <div>
-        {findSelectedPost.text && (
+        {text && (
           <div className="break-keep py-4">
-            <p className="text-sm">{findSelectedPost.text}</p>
+            <p className="text-sm">{text}</p>
           </div>
         )}
       </div>
