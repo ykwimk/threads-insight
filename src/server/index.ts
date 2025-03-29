@@ -71,17 +71,17 @@ export async function fetchPostsData(
   accessToken: string,
   after?: string,
 ): Promise<PostsResponse> {
-  const profileParams = new URLSearchParams({
+  const postsParams = new URLSearchParams({
     fields: 'id,text,media_type,media_url,timestamp,children',
     access_token: accessToken,
   });
 
   if (after) {
-    profileParams.append('after', after); // 다음 페이지를 위한 cursor
+    postsParams.append('after', after); // 다음 페이지를 위한 cursor
   }
 
   const response = await fetch(
-    `${THREADS_API_BASE}/${profileId}/threads?${profileParams.toString()}`,
+    `${THREADS_API_BASE}/${profileId}/threads?${postsParams.toString()}`,
   );
   return response.json();
 }
