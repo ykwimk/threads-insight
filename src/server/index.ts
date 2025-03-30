@@ -65,8 +65,8 @@ export async function fetchFollowerDemographics(
   return response.json();
 }
 
-// 포스트 정보
-export async function fetchPostsData(
+// 포스트 리스트
+export async function fetchPosts(
   profileId: string,
   accessToken: string,
   after?: string,

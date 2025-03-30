@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MediaInsightsDataById, PostsData } from '@/types';
-import { fetchMediaInsights, fetchPostsData } from '@/server';
+import { fetchMediaInsights, fetchPosts } from '@/server';
 import { STATUS_CODE_MAP } from '@/constants';
 
 export async function POST(request: NextRequest) {
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
   try {
     const { profileId, after } = await request.json();
 
-    const posts = await fetchPostsData(profileId, accessToken, after);
+    const posts = await fetchPosts(profileId, accessToken, after);
 
     if (!profileId) {
       return NextResponse.json(
