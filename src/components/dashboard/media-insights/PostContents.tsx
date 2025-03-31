@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -13,6 +14,44 @@ interface Props {
 }
 
 export default function PostContents({ findSelectedPost }: Props) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [images, setImages] = useState<
+    Array<{ id: string; media_url: string }>
+  >([]);
+
+  const fetchData = useCallback(async () => {
+    if (loading || !findSelectedPost) return;
+
+    setLoading(true);
+
+    try {
+      if (!findSelectedPost.children) return;
+
+      const { data } = findSelectedPost.children;
+
+      if (!data) return;
+
+      const mediaIds = data.map((v) => v.id);
+
+      const res = await fetch(`/api/dashboard/carousel-image`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mediaIds }),
+      });
+
+      const json = await res.json();
+      setImages(json.results);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, findSelectedPost]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   if (!findSelectedPost)
     return (
       <p className="text-center text-sm text-gray-500">
@@ -20,7 +59,7 @@ export default function PostContents({ findSelectedPost }: Props) {
       </p>
     );
 
-  const { media_type, media_url, text, timestamp, children } = findSelectedPost;
+  const { media_type, media_url, text, timestamp } = findSelectedPost;
 
   return (
     <div>
@@ -30,23 +69,20 @@ export default function PostContents({ findSelectedPost }: Props) {
         </span>
       </div>
       {media_url &&
-        (media_type === 'CAROUSEL_ALBUM' && children ? (
+        (media_type === 'CAROUSEL_ALBUM' && images && !!images.length ? (
           <Carousel>
             <CarouselContent>
-              <CarouselItem>
-                <img
-                  src={media_url}
-                  alt="미디어"
-                  className="w-full object-cover pt-4"
-                />
-              </CarouselItem>
-              <CarouselItem>
-                <img
-                  src={media_url}
-                  alt="미디어"
-                  className="w-full object-cover pt-4"
-                />
-              </CarouselItem>
+              {images.map((image: { id: string; media_url: string }) => {
+                return (
+                  <CarouselItem key={image.id}>
+                    <img
+                      src={image.media_url}
+                      alt="미디어"
+                      className="w-full object-cover pt-4"
+                    />
+                  </CarouselItem>
+                );
+              })}
             </CarouselContent>
             <CarouselNext className="right-2" />
             <CarouselPrevious className="left-2" />

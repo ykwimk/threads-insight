@@ -3,6 +3,7 @@ import {
   ConversationResponse,
   FollowerDemographicsResponse,
   MediaInsightsResponse,
+  PostResponse,
   PostsResponse,
   ProfileResponse,
   UserInsightsResponse,
@@ -82,6 +83,22 @@ export async function fetchPosts(
 
   const response = await fetch(
     `${THREADS_API_BASE}/${profileId}/threads?${postsParams.toString()}`,
+  );
+  return response.json();
+}
+
+// 포스트 상세
+export async function fetchPost(
+  mediaId: string,
+  accessToken: string,
+): Promise<PostResponse> {
+  const postParams = new URLSearchParams({
+    fields: 'id,media_url',
+    access_token: accessToken,
+  });
+
+  const response = await fetch(
+    `${THREADS_API_BASE}/${mediaId}?${postParams.toString()}`,
   );
   return response.json();
 }

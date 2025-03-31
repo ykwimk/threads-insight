@@ -90,7 +90,7 @@ export interface FollowerDemographicsBreakdownsResults {
 export type FollowerDemographicsResponse =
   ApiResponse<FollowerDemographicsResults>;
 
-// 포스트 정보
+// 포스트 리스트
 export interface PostsResults {
   data: Array<PostsData>;
   paging: Pick<Paging, 'cursors'> & Partial<Pick<Paging, 'next' | 'previous'>>;
@@ -108,6 +108,15 @@ export interface PostsData {
 }
 
 export type PostsResponse = ApiResponse<PostsResults>;
+
+// 포스트 상세
+
+export interface PostResult {
+  id: string;
+  media_url: string;
+}
+
+export type PostResponse = ApiResponse<PostResult>;
 
 // 미디어 인사이트
 export interface MediaInsightsResults {

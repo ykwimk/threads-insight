@@ -87,12 +87,14 @@ export default function MediaInsightsSection({ profileId }: Props) {
         </div>
       )}
       {/* 포스트 상세 인사이트 모달 */}
-      <DetailInsightByPostDialog
-        selectedPostId={selectedPostId}
-        findSelectedPost={findSelectedPost}
-        findSelectedMediaInsight={findSelectedMediaInsight}
-        onClose={() => setSelectedPostId('')}
-      />
+      {selectedPostId && (
+        <DetailInsightByPostDialog
+          selectedPostId={selectedPostId}
+          findSelectedPost={findSelectedPost}
+          findSelectedMediaInsight={findSelectedMediaInsight}
+          onClose={() => setSelectedPostId('')}
+        />
+      )}
     </div>
   );
 }
