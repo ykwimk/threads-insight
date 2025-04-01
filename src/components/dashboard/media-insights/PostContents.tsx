@@ -7,59 +7,60 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { formatRelativeTime } from '@/lib/utils';
-import { PostsData } from '@/types';
+import { PostResult, PostsData } from '@/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Props {
-  findSelectedPost: PostsData | null;
+  selectedPost: PostsData | null;
 }
 
-export default function PostContents({ findSelectedPost }: Props) {
+export default function PostContents({ selectedPost }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [images, setImages] = useState<
-    Array<{ id: string; media_url: string }>
-  >([]);
+  const [images, setImages] = useState<Array<PostResult>>([]);
 
-  const fetchData = useCallback(async () => {
-    if (loading || !findSelectedPost) return;
-
+  const fetchData = useCallback(async (mediaIds: string[]) => {
     setLoading(true);
 
     try {
-      if (!findSelectedPost.children) return;
-
-      const { data } = findSelectedPost.children;
-
-      if (!data) return;
-
-      const mediaIds = data.map((v) => v.id);
-
-      const res = await fetch(`/api/dashboard/carousel-image`, {
+      const res = await fetch('/api/dashboard/carousel-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mediaIds }),
       });
-
       const json = await res.json();
-      setImages(json.results);
+      return json.results;
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch data:', err);
+      return [];
     } finally {
       setLoading(false);
     }
-  }, [loading, findSelectedPost]);
-
-  useEffect(() => {
-    fetchData();
   }, []);
 
-  if (!findSelectedPost)
+  const loadData = useCallback(async () => {
+    if (!selectedPost || selectedPost.media_type !== 'CAROUSEL_ALBUM') return;
+
+    const children = selectedPost.children?.data ?? [];
+    const mediaIds = children.map((child) => child.id);
+    if (mediaIds.length === 0) return;
+
+    const results = await fetchData(mediaIds);
+    setImages(results);
+  }, [selectedPost, fetchData]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  if (!selectedPost)
     return (
       <p className="text-center text-sm text-gray-500">
         포스트 내용이 없습니다.
       </p>
     );
 
-  const { media_type, media_url, text, timestamp } = findSelectedPost;
+  const { media_type, media_url, text, timestamp } = selectedPost;
+  const isCarousel = media_type === 'CAROUSEL_ALBUM' && images.length > 0;
 
   return (
     <div>
@@ -68,32 +69,37 @@ export default function PostContents({ findSelectedPost }: Props) {
           {formatRelativeTime(timestamp)}
         </span>
       </div>
-      {media_url &&
-        (media_type === 'CAROUSEL_ALBUM' && images && !!images.length ? (
-          <Carousel>
-            <CarouselContent>
-              {images.map((image: { id: string; media_url: string }) => {
-                return (
-                  <CarouselItem key={image.id}>
-                    <img
-                      src={image.media_url}
-                      alt="미디어"
-                      className="w-full object-cover pt-4"
-                    />
-                  </CarouselItem>
-                );
-              })}
-            </CarouselContent>
-            <CarouselNext className="right-2" />
-            <CarouselPrevious className="left-2" />
-          </Carousel>
-        ) : (
-          <img
-            src={media_url}
-            alt="미디어"
-            className="w-full object-cover pt-4"
-          />
-        ))}
+      {media_url && (
+        <div className="pt-4">
+          {loading ? (
+            <Skeleton className="h-80 w-full rounded-md" />
+          ) : isCarousel ? (
+            <Carousel>
+              <CarouselContent className="items-center">
+                {images.map((image: PostResult) => {
+                  return (
+                    <CarouselItem key={image.id}>
+                      <img
+                        src={image.media_url}
+                        alt="미디어"
+                        className="w-full rounded-md object-cover"
+                      />
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+              <CarouselNext className="right-2" />
+              <CarouselPrevious className="left-2" />
+            </Carousel>
+          ) : (
+            <img
+              src={media_url}
+              alt="미디어"
+              className="w-full rounded-md object-cover"
+            />
+          )}
+        </div>
+      )}
       <div>
         {text && (
           <div className="break-keep py-4">

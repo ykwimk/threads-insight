@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   try {
     const { mediaIds } = await request.json();
 
-    const mappingImages = await Promise.all(
+    const mappingPost = await Promise.all(
       mediaIds.map(async (id: string) => {
         try {
           const post = await fetchPost(id, accessToken);
@@ -27,16 +27,16 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: post.error }, { status });
           }
 
-          return { id, media_url: post.media_url };
+          return { id: post.id, media_url: post.media_url };
         } catch (err) {
-          console.error('이미지 불러오기 실패', err);
-          return { id: null, media_url: null };
+          console.error('포스트 이미지 불러오기 실패', err);
+          return { id: '', media_url: '' };
         }
       }),
     );
 
     return NextResponse.json({
-      results: mappingImages,
+      results: mappingPost,
     });
   } catch (error: any) {
     console.error(error);

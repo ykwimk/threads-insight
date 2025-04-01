@@ -9,10 +9,10 @@ import {
 import { MediaInsightsData } from '@/types';
 
 interface Props {
-  findSelectedMediaInsight: Array<MediaInsightsData>;
+  selectedMediaInsight: Array<MediaInsightsData>;
 }
 
-export default function PostInsightsTable({ findSelectedMediaInsight }: Props) {
+export default function PostInsightsTable({ selectedMediaInsight }: Props) {
   return (
     <>
       {/* <h3 className="mb-2 text-lg font-semibold">📊 인사이트</h3> */}
@@ -26,8 +26,8 @@ export default function PostInsightsTable({ findSelectedMediaInsight }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {findSelectedMediaInsight.length > 0 ? (
-            findSelectedMediaInsight.map((insight) => (
+          {selectedMediaInsight.length > 0 ? (
+            selectedMediaInsight.map((insight) => (
               <TableRow key={insight.name}>
                 <TableCell className="border-color-gray-200 border-r">
                   {insight.title}

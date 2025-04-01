@@ -11,24 +11,22 @@ import PostInsightsTable from './PostInsightsTable';
 import PostContents from './PostContents';
 
 interface Props {
-  selectedPostId: string;
-  findSelectedPost: PostsData | null;
-  findSelectedMediaInsight: Array<MediaInsightsData>;
+  selectedPost: PostsData | null;
+  selectedMediaInsight: Array<MediaInsightsData>;
   onClose: () => void;
 }
 
-export default function DetailInsightByPostDialog({
-  selectedPostId,
-  findSelectedPost,
-  findSelectedMediaInsight,
+export default function PostDetailDialog({
+  selectedPost,
+  selectedMediaInsight,
   onClose,
 }: Props) {
-  if (!findSelectedPost) {
+  if (!selectedPost || !selectedMediaInsight) {
     return null;
   }
 
   return (
-    <Dialog open={!!selectedPostId} onOpenChange={onClose}>
+    <Dialog open={!!selectedPost} onOpenChange={onClose}>
       <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>📝 포스트 상세 정보</DialogTitle>
@@ -38,16 +36,14 @@ export default function DetailInsightByPostDialog({
         </DialogHeader>
         <div className="flex-1 overflow-y-auto p-4">
           <section className="mb-6">
-            <PostContents findSelectedPost={findSelectedPost} />
+            <PostContents selectedPost={selectedPost} />
           </section>
           <section className="mb-6">
-            <PostInsightsTable
-              findSelectedMediaInsight={findSelectedMediaInsight}
-            />
+            <PostInsightsTable selectedMediaInsight={selectedMediaInsight} />
           </section>
           <section>
             {/* 포스트 대화 (댓글 & 대댓글) */}
-            <PostConversation selectedPostId={selectedPostId} />
+            <PostConversation selectedPostId={selectedPost.id} />
           </section>
         </div>
       </DialogContent>

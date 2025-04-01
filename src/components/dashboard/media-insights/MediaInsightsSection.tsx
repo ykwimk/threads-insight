@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MediaInsightsDataById, PostsData } from '@/types';
 import LoadingSpinner from '../../common/LoadingSpinner';
-import DetailInsightByPostDialog from './DetailInsightByPostDialog';
+import PostDetailDialog from './PostDetailDialog';
 import PostList from './PostList';
 
 interface Props {
@@ -15,11 +15,11 @@ export default function MediaInsightsSection({ profileId }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedPostId, setSelectedPostId] = useState<string>('');
 
-  const findSelectedPost = useMemo(() => {
+  const selectedPost = useMemo(() => {
     return posts.find((post) => post.id === selectedPostId) || null;
   }, [posts, selectedPostId]);
 
-  const findSelectedMediaInsight = useMemo(() => {
+  const selectedMediaInsight = useMemo(() => {
     return (
       mediaInsights.find((insight) => insight.id === selectedPostId)
         ?.insights || []
@@ -35,9 +35,7 @@ export default function MediaInsightsSection({ profileId }: Props) {
       try {
         const res = await fetch(`/api/dashboard/media-insights`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ profileId, after }),
         });
 
@@ -87,14 +85,11 @@ export default function MediaInsightsSection({ profileId }: Props) {
         </div>
       )}
       {/* 포스트 상세 인사이트 모달 */}
-      {selectedPostId && (
-        <DetailInsightByPostDialog
-          selectedPostId={selectedPostId}
-          findSelectedPost={findSelectedPost}
-          findSelectedMediaInsight={findSelectedMediaInsight}
-          onClose={() => setSelectedPostId('')}
-        />
-      )}
+      <PostDetailDialog
+        selectedPost={selectedPost}
+        selectedMediaInsight={selectedMediaInsight}
+        onClose={() => setSelectedPostId('')}
+      />
     </div>
   );
 }

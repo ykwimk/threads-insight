@@ -110,11 +110,7 @@ export interface PostsData {
 export type PostsResponse = ApiResponse<PostsResults>;
 
 // 포스트 상세
-
-export interface PostResult {
-  id: string;
-  media_url: string;
-}
+export type PostResult = Pick<Required<PostsData>, 'id' | 'media_url'>;
 
 export type PostResponse = ApiResponse<PostResult>;
 
