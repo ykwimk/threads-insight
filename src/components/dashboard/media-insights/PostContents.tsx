@@ -60,7 +60,9 @@ export default function PostContents({ selectedPost }: Props) {
     );
 
   const { media_type, media_url, text, timestamp } = selectedPost;
-  const isCarousel = media_type === 'CAROUSEL_ALBUM' && images.length > 0;
+
+  const isCarousel = media_type === 'CAROUSEL_ALBUM';
+  const isCarouselReady = images.length > 0 && !loading;
 
   return (
     <div>
@@ -71,32 +73,35 @@ export default function PostContents({ selectedPost }: Props) {
       </div>
       {media_url && (
         <div className="pt-4">
-          {loading ? (
-            <Skeleton className="h-80 w-full rounded-md" />
-          ) : isCarousel ? (
-            <Carousel>
-              <CarouselContent className="items-center">
-                {images.map((image: PostResult) => {
-                  return (
-                    <CarouselItem key={image.id}>
-                      <img
-                        src={image.media_url}
-                        alt="미디어"
-                        className="w-full rounded-md object-cover"
-                      />
-                    </CarouselItem>
-                  );
-                })}
-              </CarouselContent>
-              <CarouselNext className="right-2" />
-              <CarouselPrevious className="left-2" />
-            </Carousel>
+          {isCarousel ? (
+            isCarouselReady ? (
+              <Carousel>
+                <CarouselContent className="items-center">
+                  {images.map((image: PostResult) => {
+                    return (
+                      <CarouselItem
+                        key={image.id}
+                        className="flex h-96 items-center justify-center rounded-md"
+                      >
+                        <img
+                          src={image.media_url}
+                          alt="미디어"
+                          className="object-fit h-full rounded-md"
+                        />
+                      </CarouselItem>
+                    );
+                  })}
+                </CarouselContent>
+                <CarouselNext className="right-2" />
+                <CarouselPrevious className="left-2" />
+              </Carousel>
+            ) : (
+              <Skeleton className="h-96 w-full rounded-md" />
+            )
           ) : (
-            <img
-              src={media_url}
-              alt="미디어"
-              className="w-full rounded-md object-cover"
-            />
+            <div className="flex h-96 w-full items-center justify-center overflow-hidden rounded-md">
+              <img src={media_url} alt="미디어" className="object-fit" />
+            </div>
           )}
         </div>
       )}
