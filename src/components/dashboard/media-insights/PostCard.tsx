@@ -50,26 +50,23 @@ export default function PostCard({ post, insights, onCardClick }: Props) {
             {post.text}
           </CardTitle>
         )}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center justify-start gap-4 text-gray-500">
-            <div className="flex items-center space-x-1">
-              <Eye size={14} />
-              <span className="text-sm">{views}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Heart size={14} />
-              <span className="text-sm">{likes}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <MessageSquare size={14} />
-              <span className="text-sm">{replies}</span>
-            </div>
+        <div className="border-t pt-3" />
+        <div className="flex items-center justify-between text-gray-700">
+          <div className="flex items-center space-x-1">
+            <Eye size={14} />
+            <span className="text-sm">{views}</span>
           </div>
-          <div className="mb-1 text-right">
-            <div className="inline-block text-xs text-gray-500">
-              {formatRelativeTime(post.timestamp)}
-            </div>
+          <div className="flex items-center space-x-1">
+            <Heart size={14} />
+            <span className="text-sm">{likes}</span>
           </div>
+          <div className="flex items-center space-x-1">
+            <MessageSquare size={14} />
+            <span className="text-sm">{replies}</span>
+          </div>
+        </div>
+        <div className="mt-2 inline-block text-xs text-gray-500">
+          {formatRelativeTime(post.timestamp)}
         </div>
       </CardContent>
     </Card>
