@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-export function UserProfileCard() {
+export function AnalyzeThreadsSection() {
   const dummy = {
     username: 'plantlover_91',
     summary:
@@ -15,7 +15,7 @@ export function UserProfileCard() {
   const { username, summary, interests, tone, activityPattern } = dummy;
 
   return (
-    <div className="p-6 pb-0">
+    <section className="p-6 pb-0">
       <Card className="relative mx-auto p-4">
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/5 backdrop-blur-md">
           <div className="w-full text-center">
@@ -60,6 +60,6 @@ export function UserProfileCard() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </section>
   );
 }
