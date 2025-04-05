@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MediaInsightsDataById, PostsData } from '@/types';
+import useAbortController from '@/hooks/useAbortController';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import PostDetailDialog from './PostDetailDialog';
 import PostList from './PostList';
@@ -9,6 +10,8 @@ interface Props {
 }
 
 export default function MediaInsightsSection({ profileId }: Props) {
+  const getSignal = useAbortController();
+
   const [mediaInsights, setMediaInsights] = useState<MediaInsightsDataById>([]);
   const [posts, setPosts] = useState<PostsData[]>([]);
   const [afterCursor, setAfterCursor] = useState<string | null>(null);
@@ -33,10 +36,13 @@ export default function MediaInsightsSection({ profileId }: Props) {
       setLoading(true);
 
       try {
+        const signal = getSignal();
+
         const res = await fetch(`/api/dashboard/media-insights`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ profileId, after }),
+          signal,
         });
 
         const json = await res.json();
@@ -55,7 +61,7 @@ export default function MediaInsightsSection({ profileId }: Props) {
         setLoading(false);
       }
     },
-    [loading],
+    [loading, getSignal, profileId],
   );
 
   useEffect(() => {

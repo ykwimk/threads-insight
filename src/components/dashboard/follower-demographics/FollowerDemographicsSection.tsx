@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,6 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { FollowerDemographicsData } from '@/types';
+import useAbortController from '@/hooks/useAbortController';
 import {
   Select,
   SelectContent,
@@ -26,6 +27,8 @@ interface Props {
 }
 
 export default function FollowerDemographicsSection({ profileId }: Props) {
+  const getSignal = useAbortController();
+
   const [data, setData] = useState<FollowerDemographicsData[] | null>(null);
   const [breakdown, setBreakdown] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,28 +40,34 @@ export default function FollowerDemographicsSection({ profileId }: Props) {
     gender: '성별',
   };
 
-  const fetchData = async (breakdown?: string) => {
-    setLoading(true);
+  const fetchData = useCallback(
+    async (breakdown?: string) => {
+      setLoading(true);
 
-    try {
-      const res = await fetch(`/api/dashboard/follower-demographics`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ profileId, breakdown }),
-      });
-      const json = await res.json();
+      try {
+        const signal = getSignal();
 
-      if (res.ok) {
-        setData(json.results.data);
+        const res = await fetch(`/api/dashboard/follower-demographics`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ profileId, breakdown }),
+          signal,
+        });
+        const json = await res.json();
+
+        if (res.ok) {
+          setData(json.results.data);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [profileId, getSignal],
+  );
 
   const followerData = useMemo(() => {
     if (!data) return;

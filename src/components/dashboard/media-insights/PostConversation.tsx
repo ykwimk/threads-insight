@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ConversationData } from '@/types';
+import useAbortController from '@/hooks/useAbortController';
 import { Skeleton } from '../../ui/skeleton';
 import PostRepliesTree from './PostRepliesTree';
 
@@ -8,6 +9,8 @@ interface Props {
 }
 
 export default function PostConversation({ selectedPostId }: Props) {
+  const getSignal = useAbortController();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [conversation, setConversation] = useState<ConversationData[]>([]);
 
@@ -17,12 +20,15 @@ export default function PostConversation({ selectedPostId }: Props) {
     setLoading(true);
 
     try {
+      const signal = getSignal();
+
       const res = await fetch(`/api/dashboard/conversation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ mediaId: selectedPostId }),
+        signal,
       });
 
       const json = await res.json();
@@ -31,11 +37,15 @@ export default function PostConversation({ selectedPostId }: Props) {
         setConversation(json.results.data);
       }
     } catch (err) {
-      console.error(err);
+      if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Fetch aborted!');
+      } else {
+        console.error(err);
+      }
     } finally {
       setLoading(false);
     }
-  }, [loading, selectedPostId]);
+  }, [loading, selectedPostId, getSignal]);
 
   useEffect(() => {
     fetchData();

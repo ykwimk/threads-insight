@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { UserInsightsData, UserInsightsValues } from '@/types';
+import useAbortController from '@/hooks/useAbortController';
 import UserInsightsCard from './UserInsightsCard';
 import LoadingSpinner from '../../common/LoadingSpinner';
 
@@ -13,19 +14,24 @@ interface Props {
 }
 
 export default function UserInsightsSection({ profileId }: Props) {
+  const getSignal = useAbortController();
+
   const [data, setData] = useState<Array<UserInsightsData>>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
 
     try {
+      const signal = getSignal();
+
       const res = await fetch('/api/dashboard/user-insights', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ profileId }),
+        signal,
       });
       const json = await res.json();
 
@@ -37,7 +43,7 @@ export default function UserInsightsSection({ profileId }: Props) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [profileId, getSignal]);
 
   const profileViews = useMemo(() => {
     const views = data.find((insight) => insight.name === 'views');

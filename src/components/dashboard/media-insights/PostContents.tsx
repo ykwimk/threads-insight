@@ -9,33 +9,42 @@ import {
 import { formatRelativeTime } from '@/lib/utils';
 import { PostResult, PostsData } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import useAbortController from '@/hooks/useAbortController';
 
 interface Props {
   selectedPost: PostsData | null;
 }
 
 export default function PostContents({ selectedPost }: Props) {
+  const getSignal = useAbortController();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [images, setImages] = useState<Array<PostResult>>([]);
 
-  const fetchData = useCallback(async (mediaIds: string[]) => {
-    setLoading(true);
+  const fetchData = useCallback(
+    async (mediaIds: string[]) => {
+      setLoading(true);
 
-    try {
-      const res = await fetch('/api/dashboard/carousel-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mediaIds }),
-      });
-      const json = await res.json();
-      return json.results;
-    } catch (err) {
-      console.error('Failed to fetch data:', err);
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      try {
+        const signal = getSignal();
+
+        const res = await fetch('/api/dashboard/carousel-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mediaIds }),
+          signal,
+        });
+        const json = await res.json();
+        return json.results;
+      } catch (err) {
+        console.error('Failed to fetch data:', err);
+        return [];
+      } finally {
+        setLoading(false);
+      }
+    },
+    [getSignal],
+  );
 
   const loadData = useCallback(async () => {
     if (!selectedPost || selectedPost.media_type !== 'CAROUSEL_ALBUM') return;
