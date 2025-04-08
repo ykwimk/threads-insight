@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 interface Props {
+  username: string;
   profileId: string;
 }
 
@@ -16,7 +17,7 @@ const defaultContent = {
   activityPattern: '하루 2~3회 글 작성',
 };
 
-export function AnalyzeThreadsSection({ profileId }: Props) {
+export function AnalyzeThreadsSection({ username, profileId }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [confirmed, setConfirmed] = useState<boolean>(false);
   const [content, setContent] = useState<{
@@ -113,13 +114,14 @@ export function AnalyzeThreadsSection({ profileId }: Props) {
         <CardHeader className="py-2">
           <CardTitle>
             <Link
-              href=""
+              href={`https://www.threads.net/@${username}`}
               className="underline"
               rel="noopener noreferrer"
               target="_blank"
             >
-              @plantlover_91
+              @{username}
             </Link>
+            님은,
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm">

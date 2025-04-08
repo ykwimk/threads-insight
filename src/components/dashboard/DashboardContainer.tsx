@@ -26,7 +26,10 @@ export default function DashboardContainer({ profile }: Props) {
     <main className="flex min-h-screen items-center justify-center bg-gray-50 max-md:p-5">
       <div className="w-full max-w-3xl max-md:block">
         {/* 사용자 쓰레드 분석 */}
-        <AnalyzeThreadsSection profileId={profile.id} />
+        <AnalyzeThreadsSection
+          username={profile.username}
+          profileId={profile.id}
+        />
         {/* 사용자 인사이트 */}
         <UserInsightsSection profileId={profile.id} />
         {/* 팔로워들의 인구 통계 정보 */}
